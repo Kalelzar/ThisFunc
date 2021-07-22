@@ -6,4 +6,4 @@ file(GLOB_RECURSE TEST_SRC CONFIGURE_DEPENDS
         )
 
 add_executable(ThisFunc_test ${TEST_SRC})
-target_link_libraries(ThisFunc_test PUBLIC gtest_main rapidcheck rapidcheck_gtest ThisFunc)
+target_link_libraries(ThisFunc_test PUBLIC rapidcheck gtest gtest_main ThisFunc)
