@@ -41,6 +41,7 @@ private:
    */
   Token makeToken(TokenType type);
   Token makeError(std::string const& message) const;
+  Token makeErrorf(std::string const& message) const;
   Token makeError(std::string const&& message) const;
 
   /**

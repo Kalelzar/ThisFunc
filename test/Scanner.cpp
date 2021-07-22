@@ -60,5 +60,18 @@ RC_GTEST_PROP(Scanner, charactersAreReadOnDemand, ()){
 
   RC_ASSERT(token2.lexeme == bs);
   RC_ASSERT(stream.peek() == ';');
+}
 
+RC_GTEST_PROP(Scanner, onlyAlphaNumerics, ()){
+
+  char a = *rc::gen::inRange(14,31);
+
+  std::stringstream stream;
+  stream << a;
+
+  ThisFunc::Scanner scanner(&stream);
+  ThisFunc::Token token = scanner.scan();
+
+  std::cout<<token.lexeme<<std::endl;
+  RC_ASSERT(token.type == ThisFunc::TokenType::ERROR);
 }

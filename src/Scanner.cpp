@@ -1,6 +1,8 @@
 #include <ThisFunc/Scanner.hpp>
 #include <ThisFunc/ScannerException.hpp>
 
+#include <sstream>
+
 namespace ThisFunc {
 
 Token Scanner::makeToken(TokenType type) {
@@ -18,6 +20,14 @@ Token Scanner::makeError(std::string const &message) const {
 Token Scanner::makeError(std::string const &&message) const {
   return {std::move(message), TokenType::ERROR, line, column};
 }
+
+Token Scanner::makeErrorf(std::string const& msg) const {
+  std::ostringstream message;
+  message<<msg << " '" << buffer << "'";
+  return {message.str(), TokenType::ERROR, line, column};
+}
+
+inline bool isValidForIdentifier(char c) { return std::isalnum(c); }
 
 Token Scanner::scan() {
   eatWhitespace();
@@ -47,7 +57,11 @@ Token Scanner::scan() {
     if (prev() == '-' || std::isdigit(prev())) {
       return number();
     } else {
-      return identifier();
+      if(isValidForIdentifier(prev())){
+        return identifier();
+      }else{
+        return makeErrorf("Unrecognized character");
+      }
     }
   }
 }
@@ -152,8 +166,6 @@ Token Scanner::param() {
     }
   }
 }
-
-inline bool isValidForIdentifier(char c) { return std::isalnum(c); }
 
 Token Scanner::identifier() {
   for (;;) {
