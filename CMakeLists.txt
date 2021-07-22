@@ -3,6 +3,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(ThisFunc VERSION 0.0.1)
 
+set(CMAKE_CONFIGURATION_TYPES "Release;RelWithDebInfo;Debug" CACHE STRING "Build type selections" FORCE)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_subdirectory(src)
