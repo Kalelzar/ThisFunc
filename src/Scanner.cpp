@@ -140,6 +140,9 @@ Token Scanner::number() {
 }
 
 Token Scanner::param() {
+  if(!isdigit(peek())){
+    return makeError("Invalid parameter ID.");
+  }
   for (;;) {
     char c = peek();
     if (isdigit(c)) {
