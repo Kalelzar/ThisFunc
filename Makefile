@@ -2,10 +2,13 @@
 
 all: build
 
-build:
+${PWD}/build/ninja:
+	@cmake -G "Ninja Multi-Config" -B build/ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=true
+
+build: ${PWD}/build/ninja
 	@cmake --build build/ninja -j 4
 
-debugBuild:
+debugBuild: ${PWD}/build/ninja
 	@cmake --build build/ninja -j 4 --config Debug
 
 test: build
