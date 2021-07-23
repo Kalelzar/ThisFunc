@@ -27,14 +27,7 @@ public:
 
 using StatementPtr = ASTPointer<Statement>;
 
-class ParamExpression : public Element {
-public:
-  virtual void print() override = 0;
-};
-
-using ParamExpressionPtr = ASTPointer<ParamExpression>;
-
-class Expression : public ParamExpression, public Statement {
+class Expression : public Expression, public Statement {
 public:
   virtual void print() override = 0;
   virtual Element* printf() override {
@@ -78,7 +71,7 @@ public:
 
 using FuncallPtr = ASTPointer<Funcall>;
 
-class Param : public ParamExpression {
+class Param : public Expression {
 public:
   Param(std::string identifier) : identifier(identifier) {}
 
@@ -88,26 +81,14 @@ public:
 
 using ParamPtr = ASTPointer<Param>;
 
-class ParamFuncall : public ParamExpression {
-public:
-  ParamFuncall(IdentifierPtr name, std::list<ParamExpressionPtr> &&args)
-      : name(name), args(args) {}
-
-  void print() override;
-  IdentifierPtr name;
-  std::list<ParamExpressionPtr> args;
-};
-
-using ParamFuncallPtr = ASTPointer<ParamFuncall>;
-
 class Fundef : public Statement {
 public:
-  Fundef(IdentifierPtr name, ParamExpressionPtr body)
+  Fundef(IdentifierPtr name, ExpressionPtr body)
       : name(name), body(body) {}
 
   void print() override;
   IdentifierPtr name;
-  ParamExpressionPtr body;
+  ExpressionPtr body;
 };
 
 using FundefPtr = ASTPointer<Fundef>;

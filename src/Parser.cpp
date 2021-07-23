@@ -153,13 +153,13 @@ AST::NumberPtr Parser::number() {
   return std::make_shared<AST::Number>(value);
 }
 
-AST::ParamExpressionPtr Parser::paramExpression() {
+AST::ExpressionPtr Parser::paramExpression() {
   if (matches(TokenType::PARAM)) {
-    return std::static_pointer_cast<AST::ParamExpression>(param());
+    return std::static_pointer_cast<AST::Expression>(param());
   } else if (matches(TokenType::NUMBER)) {
-    return std::static_pointer_cast<AST::ParamExpression>(number());
+    return std::static_pointer_cast<AST::Expression>(number());
   } else {
-    return std::static_pointer_cast<AST::ParamExpression>(paramFuncall());
+    return std::static_pointer_cast<AST::Expression>(paramFuncall());
   }
 }
 
@@ -168,11 +168,11 @@ AST::ParamPtr Parser::param() {
   return std::make_shared<AST::Param>(std::move(previous.lexeme));
 }
 
-AST::ParamFuncallPtr Parser::paramFuncall() {
+AST::FuncallPtr Parser::paramFuncall() {
   consume(TokenType::IDENTIFIER, "Expected identifier, found");
   auto name = std::make_shared<AST::Identifier>(std::move(previous.lexeme));
   consume(TokenType::LEFT_PAREN, "Expected '(', found");
-  std::list<AST::ParamExpressionPtr> args;
+  std::list<AST::ExpressionPtr> args;
 
   while (!isAtEnd() && !matches(TokenType::RIGHT_PAREN)) {
     args.push_back(paramExpression());
@@ -185,7 +185,7 @@ AST::ParamFuncallPtr Parser::paramFuncall() {
   }
 
   consume(TokenType::RIGHT_PAREN, "Expected ')', found");
-  return std::make_shared<AST::ParamFuncall>(name, std::move(args));
+  return std::make_shared<AST::Funcall>(name, std::move(args));
   ;
 }
 

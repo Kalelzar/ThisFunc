@@ -3,7 +3,7 @@
 
 namespace ThisFunc::AST {
 
-  void ParamFuncall::print(){
+  void Funcall::print(){
     std::cout<<"(";
     name->print();
     for(auto& arg : args){

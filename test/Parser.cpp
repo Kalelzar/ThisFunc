@@ -58,16 +58,16 @@ RC_GTEST_PROP(Parser, parametersCanBeModified, (i32 a)) {
   AST::Fundef *fundef = ((AST::Fundef *)body->statements.front().get());
   std::string name = fundef->name->identifier;
   RC_ASSERT(name == "mod");
-  AST::ParamFuncall * funcall = ((AST::ParamFuncall*)fundef->body.get());
+  AST::Funcall *funcall = ((AST::Funcall *)fundef->body.get());
   std::string funname = funcall->name->identifier;
   RC_ASSERT(funname == "sqrt");
   auto args = funcall->args;
   RC_ASSERT(args.size() == 1);
-  auto head = ((AST::Number*)args.front().get())->number;
+  auto head = ((AST::Number *)args.front().get())->number;
   RC_ASSERT(head == a);
 }
 
-TEST(Parser, youCannotPassFunctionsAsArguments){
+TEST(Parser, youCannotPassFunctionsAsArguments) {
   std::stringstream inout;
   inout << "lambda(epsilon)";
   Parser parser(&inout);
