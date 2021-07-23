@@ -27,13 +27,9 @@ public:
 
 using StatementPtr = ASTPointer<Statement>;
 
-class Expression : public Expression, public Statement {
+class Expression : public Statement {
 public:
   virtual void print() override = 0;
-  virtual Element* printf() override {
-    print();
-    return (Statement*) this;
-  }
 };
 using ExpressionPtr = ASTPointer<Expression>;
 
