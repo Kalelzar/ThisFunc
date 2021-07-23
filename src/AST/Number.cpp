@@ -8,4 +8,8 @@ namespace ThisFunc::AST {
     std::cout<<number;
   }
 
+  ElementPtr Number::optimal(){
+    return std::make_shared<Number>(*this);
+  }
+
 }

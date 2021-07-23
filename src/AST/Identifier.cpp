@@ -7,4 +7,8 @@ namespace ThisFunc::AST {
     std::cout<<identifier;
   }
 
+  ElementPtr Identifier::optimal() {
+    return std::make_shared<Identifier>(*this);
+  }
+
 }

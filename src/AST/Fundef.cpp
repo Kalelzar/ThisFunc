@@ -11,4 +11,11 @@ namespace ThisFunc::AST {
     std::cout<<")";
   }
 
+  ElementPtr Fundef::optimal() {
+    ExpressionPtr newBody = ptr_cast<Expression>(body->optimal());
+    return std::make_shared<Fundef>(name, newBody);
+  }
+
+
+
 }
