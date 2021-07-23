@@ -1,6 +1,7 @@
 #include <ThisFunc/Parser.hpp>
 
 #include <gtest/gtest.h>
+#include <memory>
 #include <rapidcheck/gtest.h>
 
 #include <sstream>
@@ -75,7 +76,7 @@ TEST(Parser, youCannotPassFunctionsAsArguments) {
   RC_ASSERT(parser.hadError);
 }
 
-TEST(Parser, youCannotUseParametersOutsideOfADefinition){
+TEST(Parser, youCannotUseParametersOutsideOfADefinition) {
   std::stringstream inout;
   inout << "lambda(#0)";
   Parser parser(&inout);
@@ -83,10 +84,26 @@ TEST(Parser, youCannotUseParametersOutsideOfADefinition){
   RC_ASSERT(parser.hadError);
 }
 
-TEST(Parser, recursionIsPossible){
+TEST(Parser, recursionIsPossible) {
   std::stringstream inout;
   inout << "fact <- if(eq(#0, 0), 1, mul(#0, fact(sub(#0, 1))))";
   Parser parser(&inout);
   AST::BodyPtr body = parser.parse();
   RC_ASSERT(!parser.hadError);
+}
+
+RC_GTEST_PROP(Parser, functionsMayHaveManyArguments, (u8 args)) {
+  std::stringstream inout;
+  inout << "lambda(";
+  if (args > 0)
+    inout << "0";
+  for (u8 i = 1; i < args; i++) {
+    inout << ", "  << (u16)i;
+  }
+  inout << ")";
+  Parser parser(&inout);
+  AST::BodyPtr body = parser.parse();
+  RC_ASSERT(!parser.hadError);
+  AST::FuncallPtr funcall = std::static_pointer_cast<AST::Funcall>(body->statements.front());
+  RC_ASSERT(funcall->args.size() == args);
 }
