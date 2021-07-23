@@ -24,7 +24,7 @@ retest: build
 	@ctest -j 4 --rerun-failed --test-dir build/ninja -C Release
 
 run: build
-	@./build/ninja/Release/ThisFunc_main
+	@rlwrap ./build/ninja/Release/ThisFunc_main
 
 debug: debugBuild
 	@valgrind -s ./build/ninja/Debug/ThisFunc_main
