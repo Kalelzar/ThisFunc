@@ -5,7 +5,9 @@
 
 namespace ThisFunc::AST {
 
-class Add : public Expression {
+class SpecializedExpression : public Expression {};
+
+class Add : public SpecializedExpression {
 public:
   Add(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
@@ -13,7 +15,7 @@ public:
   ElementPtr optimal() override;
 };
 
-class Sub : public Expression {
+class Sub : public SpecializedExpression {
 public:
   Sub(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
@@ -21,7 +23,7 @@ public:
   ElementPtr optimal() override;
 };
 
-class Mul : public Expression {
+class Mul : public SpecializedExpression {
 public:
   Mul(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
@@ -29,7 +31,7 @@ public:
   ElementPtr optimal() override;
 };
 
-class Div : public Expression {
+class Div : public SpecializedExpression {
 public:
   Div(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
@@ -37,7 +39,7 @@ public:
   ElementPtr optimal() override;
 };
 
-class Pow : public Expression {
+class Pow : public SpecializedExpression {
 public:
   Pow(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
@@ -45,7 +47,7 @@ public:
   ElementPtr optimal() override;
 };
 
-class Eq : public Expression {
+class Eq : public SpecializedExpression {
 public:
   Eq(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
@@ -53,7 +55,7 @@ public:
   ElementPtr optimal() override;
 };
 
-class Nand : public Expression {
+class Nand : public SpecializedExpression {
 public:
   Nand(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
@@ -61,7 +63,7 @@ public:
   ElementPtr optimal() override;
 };
 
-class Le : public Expression {
+class Le : public SpecializedExpression {
 public:
   Le(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
@@ -69,7 +71,7 @@ public:
   ElementPtr optimal() override;
 };
 
-class If : public Expression {
+class If : public SpecializedExpression {
 public:
   If(ExpressionPtr cond, ExpressionPtr ifTrue, ExpressionPtr ifFalse)
       : cond(cond), ifTrue(ifTrue), ifFalse(ifFalse) {}
