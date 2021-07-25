@@ -26,7 +26,8 @@ ElementPtr Eq::optimal() {
   }else if(nlhs->isIdentifier() && nrhs->isIdentifier()){
     std::string lhss = ptr_cast<Identifier>(nlhs)->identifier;
     std::string rhss = ptr_cast<Identifier>(nrhs)->identifier;
-    return std::make_shared<Number>(lhss == rhss ? 1 : 0);
+    if(lhss == rhss)
+      return std::make_shared<Number>(1);
   }
   return std::make_shared<Eq>(ptr_cast<Expression>(nlhs),
                                ptr_cast<Expression>(nrhs));
