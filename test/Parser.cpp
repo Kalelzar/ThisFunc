@@ -44,7 +44,7 @@ TEST(Parser, anIdentityExists) {
   std::string name = fundef->name->identifier;
   ASSERT_FALSE(parser.hadError);
   ASSERT_EQ(name, "identity");
-  std::string id = ((AST::Param *)fundef->body.get())->identifier;
+  std::string id = ((AST::Identifier *)fundef->body.get())->identifier;
   ASSERT_EQ(id, "#0");
 }
 
@@ -68,20 +68,12 @@ RC_GTEST_PROP(Parser, parametersCanBeModified, (i32 a)) {
   RC_ASSERT(head == a);
 }
 
-TEST(Parser, youCannotPassFunctionsAsArguments) {
+TEST(Parser, youCanPassFunctionsAsArguments) {
   std::stringstream inout;
   inout << "lambda(epsilon)";
   Parser parser(&inout);
   AST::BodyPtr body = parser.parse();
-  RC_ASSERT(parser.hadError);
-}
-
-TEST(Parser, youCannotUseParametersOutsideOfADefinition) {
-  std::stringstream inout;
-  inout << "lambda(#0)";
-  Parser parser(&inout);
-  AST::BodyPtr body = parser.parse();
-  RC_ASSERT(parser.hadError);
+  RC_ASSERT(!parser.hadError);
 }
 
 TEST(Parser, recursionIsPossible) {

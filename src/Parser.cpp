@@ -96,19 +96,18 @@ AST::StatementPtr Parser::statement() {
         std::make_shared<AST::Identifier>(std::move(previous.lexeme));
     if (matches(TokenType::ARROW_LEFT)) {
       // This is a function definition
-      return std::static_pointer_cast<AST::Statement>(fundef(identifier));
+      return fundef(identifier);
     } else {
-      return std::static_pointer_cast<AST::Statement>(funcall(identifier));
+      return funcall(identifier);
     }
   }
-  // This will genuinely do nothing when evaluated but we need to parse it
-  // anyway
-  return std::static_pointer_cast<AST::Statement>(expression());
+
+  return expression();
 }
 
 AST::FundefPtr Parser::fundef(AST::IdentifierPtr name) {
   consume(TokenType::ARROW_LEFT, "Expected '<-', found");
-  auto functionDefinition = paramExpression();
+  auto functionDefinition = expression();
   return std::make_shared<AST::Fundef>(name, functionDefinition);
 }
 
@@ -134,15 +133,18 @@ AST::FuncallPtr Parser::funcall(AST::IdentifierPtr name) {
 AST::ExpressionPtr Parser::expression() {
 
   if (matches(TokenType::NUMBER)) {
-    return std::static_pointer_cast<AST::Expression>(number());
+    return number();
   } else if (consume(TokenType::IDENTIFIER, "Expected an expression, found")) {
     auto identifier =
         std::make_shared<AST::Identifier>(std::move(previous.lexeme));
-    return std::static_pointer_cast<AST::Expression>(funcall(identifier));
+    if(matches(TokenType::LEFT_PAREN)){
+      return funcall(identifier);
+    }else{
+      return identifier;
+    }
   } else {
     advance();
-    return std::static_pointer_cast<AST::Expression>(
-        std::make_shared<AST::Number>(69.69));
+    return std::make_shared<AST::Number>(69.69);
   }
 }
 
@@ -151,42 +153,6 @@ AST::NumberPtr Parser::number() {
   double value = stod(previous.lexeme);
 
   return std::make_shared<AST::Number>(value);
-}
-
-AST::ExpressionPtr Parser::paramExpression() {
-  if (matches(TokenType::PARAM)) {
-    return std::static_pointer_cast<AST::Expression>(param());
-  } else if (matches(TokenType::NUMBER)) {
-    return std::static_pointer_cast<AST::Expression>(number());
-  } else {
-    return std::static_pointer_cast<AST::Expression>(paramFuncall());
-  }
-}
-
-AST::ParamPtr Parser::param() {
-  consume(TokenType::PARAM, "Expected a function parameter, found");
-  return std::make_shared<AST::Param>(std::move(previous.lexeme));
-}
-
-AST::FuncallPtr Parser::paramFuncall() {
-  consume(TokenType::IDENTIFIER, "Expected identifier, found");
-  auto name = std::make_shared<AST::Identifier>(std::move(previous.lexeme));
-  consume(TokenType::LEFT_PAREN, "Expected '(', found");
-  std::list<AST::ExpressionPtr> args;
-
-  while (!isAtEnd() && !matches(TokenType::RIGHT_PAREN)) {
-    args.push_back(paramExpression());
-    if (matches(TokenType::RIGHT_PAREN))
-      break;
-    advance();
-    if (!matches(TokenType::RIGHT_PAREN) && previous.type != TokenType::COMMA) {
-      error(previous, "Expected ',', found");
-    }
-  }
-
-  consume(TokenType::RIGHT_PAREN, "Expected ')', found");
-  return std::make_shared<AST::Funcall>(name, std::move(args));
-  ;
 }
 
 } // namespace ThisFunc

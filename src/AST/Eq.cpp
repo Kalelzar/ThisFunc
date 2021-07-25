@@ -23,9 +23,9 @@ ElementPtr Eq::optimal() {
     double lhsd = ptr_cast<Number>(nlhs)->number;
     double rhsd = ptr_cast<Number>(nrhs)->number;
     return std::make_shared<Number>(std::fabs(lhsd - rhsd) < 1E-6 ? 1 : 0);
-  }else if(nlhs->isParameter() && nrhs->isParameter()){
-    std::string lhss = ptr_cast<Param>(nlhs)->identifier;
-    std::string rhss = ptr_cast<Param>(nrhs)->identifier;
+  }else if(nlhs->isIdentifier() && nrhs->isIdentifier()){
+    std::string lhss = ptr_cast<Identifier>(nlhs)->identifier;
+    std::string rhss = ptr_cast<Identifier>(nrhs)->identifier;
     return std::make_shared<Number>(lhss == rhss ? 1 : 0);
   }
   return std::make_shared<Eq>(ptr_cast<Expression>(nlhs),

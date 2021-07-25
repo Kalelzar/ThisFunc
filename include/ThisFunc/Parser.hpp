@@ -28,9 +28,6 @@ namespace ThisFunc {
     AST::FuncallPtr funcall(AST::IdentifierPtr);
     AST::ExpressionPtr expression();
     AST::NumberPtr number();
-    AST::ExpressionPtr paramExpression();
-    AST::FuncallPtr paramFuncall();
-    AST::ParamPtr param();
 
     Token previous = {};
     Token current = {};

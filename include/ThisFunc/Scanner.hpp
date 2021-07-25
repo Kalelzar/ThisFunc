@@ -75,7 +75,6 @@ private:
 
   Token number();
   Token identifier();
-  Token param();
 
 };
 

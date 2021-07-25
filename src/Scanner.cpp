@@ -27,7 +27,7 @@ Token Scanner::makeErrorf(std::string const& msg) const {
   return {message.str(), TokenType::ERROR, line, column};
 }
 
-inline bool isValidForIdentifier(char c) { return std::isalnum(c); }
+inline bool isValidForIdentifier(char c) { return std::isalnum(c) || c == '_'; }
 
 Token Scanner::scan() {
   eatWhitespace();
@@ -45,11 +45,11 @@ Token Scanner::scan() {
   case ')':
     return makeToken(TokenType::RIGHT_PAREN);
     break;
-  case '#':
-    return param();
-    break;
   case ',':
     return makeToken(TokenType::COMMA);
+    break;
+  case '#':
+    return identifier();
     break;
   case '\0':
     return makeToken(TokenType::TOKEN_EOF);
@@ -151,20 +151,6 @@ Token Scanner::number() {
     return makeError("Malformed numeric literal. Multiple '.' found.");
   }
   return makeToken(TokenType::NUMBER);
-}
-
-Token Scanner::param() {
-  if(!isdigit(peek())){
-    return makeError("Invalid parameter ID.");
-  }
-  for (;;) {
-    char c = peek();
-    if (isdigit(c)) {
-      next();
-    } else {
-      return makeToken(TokenType::PARAM);
-    }
-  }
 }
 
 Token Scanner::identifier() {

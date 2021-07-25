@@ -21,7 +21,7 @@ public:
 
   virtual ASTPointer<Element> optimal() = 0;
   virtual bool isNumber() { return false; }
-  virtual bool isParameter() { return false; }
+  virtual bool isIdentifier() { return false; }
   virtual Element *printf() {
     print();
     return this;
@@ -60,7 +60,7 @@ public:
 
 using NumberPtr = ASTPointer<Number>;
 
-class Identifier : public Element {
+class Identifier : public Expression {
 public:
   Identifier(std::string &) = delete;
   Identifier(std::string &&identifier) : identifier(identifier) {}
@@ -68,6 +68,7 @@ public:
   void print() override;
   ASTPointer<Element> optimal() override;
   std::string identifier;
+  bool isIdentifier() override { return true; }
 };
 
 using IdentifierPtr = ASTPointer<Identifier>;
@@ -84,19 +85,6 @@ public:
 };
 
 using FuncallPtr = ASTPointer<Funcall>;
-
-class Param : public Expression {
-public:
-  Param(std::string identifier) : identifier(identifier) {}
-
-  void print() override;
-  ASTPointer<Element> optimal() override;
-  bool isParameter() override { return true; }
-
-  std::string identifier;
-};
-
-using ParamPtr = ASTPointer<Param>;
 
 class Fundef : public Statement {
 public:
@@ -115,7 +103,8 @@ class Body : public Element {
 public:
   void print() override;
   ElementPtr optimal() override;
-  Body(std::list<StatementPtr> statements) : statements(statements) {}
+  Body(std::list<StatementPtr>& statements) : statements(statements) {}
+  Body(std::list<StatementPtr>&& statements) : statements(statements) {}
   std::list<StatementPtr> statements;
 };
 

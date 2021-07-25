@@ -6,8 +6,6 @@ namespace ThisFunc {
     switch(t){
     case TokenType::IDENTIFIER:
       return "Identifier";
-    case TokenType::PARAM:
-      return "Parameter";
     case TokenType::NUMBER:
       return "Number";
     case TokenType::LEFT_PAREN:

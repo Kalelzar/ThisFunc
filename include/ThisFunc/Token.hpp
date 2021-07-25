@@ -12,10 +12,8 @@ namespace ThisFunc {
 enum class TokenType {
 
   /// Atoms
-  IDENTIFIER, //< A function name. Can contain _A-Za-z0-9 but cannot start with
+  IDENTIFIER, //< A function name. Can contain _#A-Za-z0-9 but cannot start with
               //0-9.
-  PARAM,  //< A function parameter. Starts with '#' and can otherwise contain
-          //only digits.
   NUMBER, //< A real number.
 
   /// Grammar

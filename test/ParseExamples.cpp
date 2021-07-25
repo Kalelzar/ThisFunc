@@ -85,8 +85,8 @@ TEST(ParseExample, DeclareSimpleFunction) {
   std::string funname2 = AST::ptr_cast<AST::Identifier>(funcall->name)->identifier;
   ASSERT_EQ(funname2, "add");
   ASSERT_EQ(funcall->args.size(), 2);
-  auto& lhs = AST::ptr_cast<AST::Param>(funcall->args.front())->identifier;
+  auto& lhs = AST::ptr_cast<AST::Identifier>(funcall->args.front())->identifier;
   ASSERT_EQ(lhs, "#0");
-  auto& rhs = AST::ptr_cast<AST::Param>(funcall->args.back())->identifier;
+  auto& rhs = AST::ptr_cast<AST::Identifier>(funcall->args.back())->identifier;
   ASSERT_EQ(rhs, "#0");
 }
