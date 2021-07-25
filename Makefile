@@ -1,9 +1,12 @@
-.PHONY: all debugBuild build test run
+.PHONY: all debugBuild build test run docs
 
 all: build
 
 ${PWD}/build/ninja:
 	@cmake -G "Ninja Multi-Config" -B build/ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=true
+
+docs:
+	@doxygen doxygen
 
 build: ${PWD}/build/ninja
 	@cmake --build build/ninja -j 4
