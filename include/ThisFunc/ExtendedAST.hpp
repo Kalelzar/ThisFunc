@@ -80,6 +80,66 @@ public:
   ElementPtr optimal() override;
 };
 
+class Sqrt : public SpecializedExpression {
+public:
+  Sqrt(ExpressionPtr value) : value(value){};
+  ExpressionPtr value;
+  void print() override;
+  ElementPtr optimal() override;
+};
+
+class Sin : public SpecializedExpression {
+public:
+  Sin(ExpressionPtr value) : value(value){};
+  ExpressionPtr value;
+  void print() override;
+  ElementPtr optimal() override;
+};
+
+class Cos : public SpecializedExpression {
+public:
+  Cos(ExpressionPtr value) : value(value){};
+  ExpressionPtr value;
+  void print() override;
+  ElementPtr optimal() override;
+};
+
+class List : public SpecializedExpression {
+public:
+  List(std::list<ExpressionPtr> &values) : values(values){};
+  List(std::list<ExpressionPtr> &&values) : values(values){};
+  std::list<ExpressionPtr> values;
+  void print() override;
+  ElementPtr optimal() override;
+};
+
+using ListPtr = ASTPointer<List>;
+
+class Head : public SpecializedExpression {
+public:
+  Head(ListPtr value) : value(value){};
+  ListPtr value;
+  void print() override;
+  ElementPtr optimal() override;
+};
+
+class Tail : public SpecializedExpression {
+public:
+  Tail(ListPtr value) : value(value){};
+  ListPtr value;
+  void print() override;
+  ElementPtr optimal() override;
+};
+
+class Map : public SpecializedExpression {
+public:
+  Map(IdentifierPtr funname, ListPtr list) : funname(funname), list(list) {}
+  IdentifierPtr funname;
+  ListPtr list;
+  void print() override;
+  ElementPtr optimal() override;
+};
+
 } // namespace ThisFunc::AST
 
 #endif /* EXTENDEDAST_H */

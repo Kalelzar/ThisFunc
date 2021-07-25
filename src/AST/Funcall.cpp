@@ -1,6 +1,7 @@
 #include <ThisFunc/AST.hpp>
 #include <ThisFunc/ExtendedAST.hpp>
 #include <iostream>
+#include <memory>
 
 namespace ThisFunc::AST {
 
@@ -43,6 +44,26 @@ ElementPtr Funcall::optimal() {
   } else if (name->identifier == "if" && args.size() == 3) {
     return std::make_shared<If>(args.front(), *(++args.begin()), args.back())
         ->optimal();
+  } else if (name->identifier == "sqrt" && args.size() == 1) {
+    return std::make_shared<Sqrt>(args.front())->optimal();
+  } else if (name->identifier == "sin" && args.size() == 1) {
+    return std::make_shared<Sin>(args.front())->optimal();
+  } else if (name->identifier == "cos" && args.size() == 1) {
+    return std::make_shared<Cos>(args.front())->optimal();
+  } else if (name->identifier == "head" && args.size() == 1) {
+    //FIX: Check type before casting
+    return std::make_shared<Head>(ptr_cast<List>(args.front()->optimal()))->optimal();
+  } else if (name->identifier == "tail" && args.size() == 1) {
+    //FIX: Check type before casting
+    return std::make_shared<Tail>(ptr_cast<List>(args.front()->optimal()))->optimal();
+  } else if (name->identifier == "list") {
+    return std::make_shared<List>(std::move(args));
+  } else if (name->identifier == "map" && args.size() == 2) {
+    //FIX: Check type before casting
+    auto map = std::make_shared<Map>(ptr_cast<Identifier>(args.front()),
+                                     ptr_cast<List>(args.back()->optimal()))
+                   ->optimal();
+    return map;
   }
 
   std::list<ExpressionPtr> newArgs;
