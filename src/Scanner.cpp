@@ -54,7 +54,7 @@ Token Scanner::scan() {
   case '\0':
     return makeToken(TokenType::TOKEN_EOF);
   default:
-    if (prev() == '-' || std::isdigit(prev())) {
+    if ((prev() == '-' && std::isdigit(peek())) || std::isdigit(prev())) {
       return number();
     } else {
       if(isValidForIdentifier(prev())){
