@@ -16,6 +16,6 @@ namespace ThisFunc::AST {
     return std::make_shared<Fundef>(name, newBody);
   }
 
-
+  void Fundef::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
 
 }

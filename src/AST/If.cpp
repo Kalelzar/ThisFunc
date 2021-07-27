@@ -33,4 +33,6 @@ ElementPtr If::optimal() {
                               ptr_cast<Expression>(ifFalse->optimal()));
 }
 
+void If::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+
 } // namespace ThisFunc::AST

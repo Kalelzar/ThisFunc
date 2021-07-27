@@ -17,4 +17,6 @@ ElementPtr Tail::optimal() {
   return value;
 }
 
+void Tail::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+
 } // namespace ThisFunc::AST

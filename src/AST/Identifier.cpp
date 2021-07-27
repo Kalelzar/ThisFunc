@@ -11,4 +11,6 @@ namespace ThisFunc::AST {
     return std::make_shared<Identifier>(*this);
   }
 
+  void Identifier::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+
 }

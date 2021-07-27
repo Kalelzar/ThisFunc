@@ -1,4 +1,5 @@
 #include "ThisFunc/AST.hpp"
+#include "ThisFunc/Chunk.hpp"
 #include <ThisFunc/ExtendedAST.hpp>
 
 #include <iostream>
@@ -14,6 +15,19 @@ void Add::print() {
   std::cout << ")";
 }
 
+  void Add::compile(VM::Chunk* chunk) {
+    lhs->compile(chunk);
+    rhs->compile(chunk);
+    chunk->write(VM::OP_ADD, {0,0});
+  }
+
+/**
+ * @copydoc Element::optimal
+ * @details An optimal Add is one which:
+              <br>1) if both of it's arguments optimize to a Number: A Number
+containing their sum
+              <br>2) otherwise: an Add with optimal arguments
+ */
 ElementPtr Add::optimal() {
   ElementPtr nlhs = lhs->optimal();
   ElementPtr nrhs = rhs->optimal();

@@ -15,6 +15,11 @@ void Funcall::print() {
   std::cout << ")";
 }
 
+void Funcall::compile(VM::Chunk *chunk) {
+    chunk->write(VM::OP_CONSTANT, {0, 0});
+    chunk->write(chunk->addConstant(0), {0, 0});
+  }
+
 ElementPtr Funcall::optimal() {
 
   if (name->identifier == "add" && args.size() == 2) {

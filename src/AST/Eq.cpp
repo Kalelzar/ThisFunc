@@ -15,6 +15,8 @@ void Eq::print() {
   std::cout << ")";
 }
 
+void Eq::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+
 ElementPtr Eq::optimal() {
   ElementPtr nlhs = lhs->optimal();
   ElementPtr nrhs = rhs->optimal();

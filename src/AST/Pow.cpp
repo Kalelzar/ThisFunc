@@ -27,4 +27,6 @@ ElementPtr Pow::optimal() {
                                ptr_cast<Expression>(nrhs));
 }
 
+void Pow::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+
 } // namespace ThisFunc::AST

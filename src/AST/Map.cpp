@@ -31,4 +31,6 @@ ElementPtr Map::optimal() {
   return make_shared<List>(std::move(mapped))->optimal();
 }
 
+void Map::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+
 } // namespace ThisFunc::AST

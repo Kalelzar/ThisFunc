@@ -25,4 +25,6 @@ ElementPtr List::optimal() {
   return std::make_shared<List>(std::move(newValues));
 }
 
+void List::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+
 } // namespace ThisFunc::AST

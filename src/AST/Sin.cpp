@@ -29,4 +29,6 @@ ElementPtr Sin::optimal() {
   return std::make_shared<Sin>(ptr_cast<Expression>(val));
 }
 
+void Sin::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+
 } // namespace ThisFunc::AST

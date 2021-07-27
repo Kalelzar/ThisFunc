@@ -1,4 +1,5 @@
 #include "ThisFunc/AST.hpp"
+#include "ThisFunc/Chunk.hpp"
 #include <ThisFunc/ExtendedAST.hpp>
 
 #include <iostream>
@@ -23,6 +24,12 @@ ElementPtr Mul::optimal() {
   }
   return std::make_shared<Mul>(ptr_cast<Expression>(nlhs),
                                ptr_cast<Expression>(nrhs));
+}
+
+void Mul::compile(VM::Chunk *chunk) {
+  lhs->compile(chunk);
+  rhs->compile(chunk);
+  chunk->write(VM::OP_MULTIPLY, {0, 0});
 }
 
 } // namespace ThisFunc::AST

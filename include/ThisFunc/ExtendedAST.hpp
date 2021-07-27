@@ -12,6 +12,7 @@ public:
   Add(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -20,6 +21,7 @@ public:
   Sub(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -28,6 +30,7 @@ public:
   Mul(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -36,6 +39,7 @@ public:
   Div(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -44,6 +48,7 @@ public:
   Pow(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -52,6 +57,7 @@ public:
   Eq(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -60,6 +66,7 @@ public:
   Nand(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -68,6 +75,7 @@ public:
   Le(ExpressionPtr lhs, ExpressionPtr rhs) : lhs(lhs), rhs(rhs) {}
   ExpressionPtr lhs, rhs;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -77,6 +85,7 @@ public:
       : cond(cond), ifTrue(ifTrue), ifFalse(ifFalse) {}
   ExpressionPtr cond, ifTrue, ifFalse;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -85,6 +94,7 @@ public:
   Sqrt(ExpressionPtr value) : value(value){};
   ExpressionPtr value;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -93,6 +103,7 @@ public:
   Sin(ExpressionPtr value) : value(value){};
   ExpressionPtr value;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -101,6 +112,7 @@ public:
   Cos(ExpressionPtr value) : value(value){};
   ExpressionPtr value;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -110,6 +122,7 @@ public:
   List(std::list<ExpressionPtr> &&values) : values(values){};
   std::list<ExpressionPtr> values;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -120,6 +133,7 @@ public:
   Head(ListPtr value) : value(value){};
   ListPtr value;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -128,6 +142,7 @@ public:
   Tail(ListPtr value) : value(value){};
   ListPtr value;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 
@@ -137,6 +152,7 @@ public:
   IdentifierPtr funname;
   ListPtr list;
   void print() override;
+  void compile(VM::Chunk*) override;
   ElementPtr optimal() override;
 };
 

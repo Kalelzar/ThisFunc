@@ -1,4 +1,5 @@
 #include "ThisFunc/AST.hpp"
+#include "ThisFunc/Chunk.hpp"
 #include <ThisFunc/ExtendedAST.hpp>
 
 #include <iostream>
@@ -12,6 +13,12 @@ void Div::print() {
   std::cout << " ";
   rhs->print();
   std::cout << ")";
+}
+
+void Div::compile(VM::Chunk *chunk) {
+  lhs->compile(chunk);
+  rhs->compile(chunk);
+  chunk->write(VM::OP_DIVIDE, {0, 0});
 }
 
 ElementPtr Div::optimal() {

@@ -6,6 +6,8 @@
 #include <string>
 #include <type_traits>
 
+#include <ThisFunc/Chunk.hpp>
+
 namespace ThisFunc {
 namespace AST {
 
@@ -19,6 +21,8 @@ public:
    * @details    Uses a Lisp-like syntax.
    */
   virtual void print() = 0;
+
+  virtual void compile(VM::Chunk*) = 0;
 
   /**
    * @brief      Return an optimal version of the AST node
@@ -64,6 +68,7 @@ public:
 
   double number;
   void print() override;
+  void compile(VM::Chunk*) override;
   ASTPointer<Element> optimal() override;
   bool isNumber() override { return true; }
 };
@@ -77,6 +82,7 @@ public:
 
   void print() override;
   ASTPointer<Element> optimal() override;
+  void compile(VM::Chunk*) override;
   std::string identifier;
   bool isIdentifier() override { return true; }
 };
@@ -91,6 +97,7 @@ public:
   IdentifierPtr name;
   std::list<ExpressionPtr> args;
   void print() override;
+  void compile(VM::Chunk*) override;
   ASTPointer<Element> optimal() override;
 };
 
@@ -102,7 +109,7 @@ public:
 
   void print() override;
   ASTPointer<Element> optimal() override;
-
+  void compile(VM::Chunk*) override;
   IdentifierPtr name;
   ExpressionPtr body;
 };
@@ -113,6 +120,7 @@ class Body : public Element {
 public:
   void print() override;
   ElementPtr optimal() override;
+  void compile(VM::Chunk*) override;
   Body(std::list<StatementPtr> &statements) : statements(statements) {}
   Body(std::list<StatementPtr> &&statements) : statements(statements) {}
   std::list<StatementPtr> statements;

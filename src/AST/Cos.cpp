@@ -1,8 +1,8 @@
 #include "ThisFunc/AST.hpp"
 #include <ThisFunc/ExtendedAST.hpp>
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 namespace ThisFunc::AST {
 
@@ -11,6 +11,8 @@ void Cos::print() {
   value->print();
   std::cout << ")";
 }
+
+void Cos::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
 
 /**
  * @copydoc Element::optimal

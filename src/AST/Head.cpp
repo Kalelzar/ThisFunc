@@ -19,4 +19,6 @@ ElementPtr Head::optimal() {
   else return std::make_shared<List>(std::list<ExpressionPtr>());
 }
 
+void Head::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+
 } // namespace ThisFunc::AST
