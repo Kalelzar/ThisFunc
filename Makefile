@@ -31,3 +31,9 @@ run: build
 
 debug: debugBuild
 	@valgrind -s ./build/ninja/Debug/ThisFunc_main
+bench: build
+	@./build/ninja/bench/Release/ThisFunc_bench
+
+debugBench: debugBuild
+	@valgrind -s ./build/ninja/bench/Debug/ThisFunc_bench
+

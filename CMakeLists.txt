@@ -16,3 +16,4 @@ add_executable(ThisFunc_main exec/main.cpp)
 target_link_libraries(ThisFunc_main PUBLIC ThisFunc)
 
 add_subdirectory(test)
+add_subdirectory(bench)
