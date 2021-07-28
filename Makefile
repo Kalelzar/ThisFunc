@@ -1,4 +1,4 @@
-.PHONY: all debugBuild build test run docs
+.PHONY: all debugBuild build test format run docs bench debugBench
 
 all: build
 
@@ -8,10 +8,10 @@ ${PWD}/build/ninja:
 docs:
 	@doxygen doxygen
 
-build: ${PWD}/build/ninja
+build: ${PWD}/build/ninja format
 	@cmake --build build/ninja -j 4
 
-debugBuild: ${PWD}/build/ninja
+debugBuild: ${PWD}/build/ninja format
 	@cmake --build build/ninja -j 4 --config Debug
 
 test: build
@@ -31,9 +31,12 @@ run: build
 
 debug: debugBuild
 	@valgrind -s ./build/ninja/Debug/ThisFunc_main
+
 bench: build
 	@./build/ninja/bench/Release/ThisFunc_bench
 
 debugBench: debugBuild
 	@valgrind -s ./build/ninja/bench/Debug/ThisFunc_bench
 
+format:
+	@find . -iregex ".*pp" | grep -v './build' | xargs clang-format -style file -i

@@ -1,14 +1,13 @@
-#include "ThisFunc/AST.hpp"
+#include <ThisFunc/AST.hpp>
 #include <ThisFunc/ExtendedAST.hpp>
-
 #include <cmath>
 #include <iostream>
 
 namespace ThisFunc::AST {
 
-void Sin::print() {
+void Sin::print ( ) {
   std::cout << "(sin ";
-  value->print();
+  value->print ( );
   std::cout << ")";
 }
 
@@ -19,16 +18,18 @@ void Sin::print() {
  containing the sine of the argument
  <br>2) otherwise: a Sin with an optimal argument
 */
-ElementPtr Sin::optimal() {
-  ElementPtr val = value->optimal();
+ElementPtr Sin::optimal ( ) {
+  ElementPtr val = value->optimal ( );
 
-  if (value->isNumber()) {
-    double num = ptr_cast<Number>(val)->number;
-    return std::make_shared<Number>(std::sin(num));
+  if (value->isNumber ( )) {
+    double num = ptr_cast<Number> (val)->number;
+    return std::make_shared<Number> (std::sin (num), line, column);
   }
-  return std::make_shared<Sin>(ptr_cast<Expression>(val));
+  return std::make_shared<Sin> (ptr_cast<Expression> (val), line, column);
 }
 
-void Sin::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+void Sin::compile (VM::Chunk* chunk) {
+  chunk->write (VM::NOOP, {line, column});
+}
 
-} // namespace ThisFunc::AST
+}     // namespace ThisFunc::AST

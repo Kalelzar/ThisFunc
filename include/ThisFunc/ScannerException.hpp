@@ -7,14 +7,14 @@
 namespace ThisFunc {
 
 class ScannerException : public std::exception {
-public:
-  ScannerException(std::string &msg) : msg(msg) {}
-  ScannerException(std::string &&msg) : msg(std::move(msg)) {}
+  public:
+  ScannerException (std::string& msg) : msg (msg) { }
+  ScannerException (std::string&& msg) : msg (std::move (msg)) { }
 
-private:
+  private:
   std::string msg;
 };
 
-} // namespace ThisFunc
+}     // namespace ThisFunc
 
 #endif /* SCANNEREXCEPTION_H */

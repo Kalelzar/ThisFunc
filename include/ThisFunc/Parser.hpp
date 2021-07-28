@@ -6,36 +6,35 @@
 
 namespace ThisFunc {
 
-  class Parser {
+class Parser {
   public:
-    Parser(std::istream* input) : scanner(input) {}
+  Parser (std::istream* input) : scanner (input) { }
 
-    AST::BodyPtr parse();
-    bool hadError = false;
+  AST::BodyPtr parse ( );
+  bool         hadError = false;
   private:
+  void               advance ( );
+  void               emitError ( );
+  void               error (std::string message);
+  void               error (Token target, std::string message);
+  bool               consume (TokenType, std::string);
+  bool               matches (TokenType);
+  bool               isAtEnd ( );
 
-    void advance();
-    void emitError();
-    void error(std::string message);
-    void error(Token target, std::string message);
-    bool consume(TokenType, std::string);
-    bool matches(TokenType);
-    bool isAtEnd();
+  AST::BodyPtr       body ( );
+  AST::StatementPtr  statement ( );
+  AST::FundefPtr     fundef (AST::IdentifierPtr, u32 line, u32 column);
+  AST::FuncallPtr    funcall (AST::IdentifierPtr, u32 line, u32 column);
+  AST::ExpressionPtr expression ( );
+  AST::NumberPtr     number ( );
 
-    AST::BodyPtr body();
-    AST::StatementPtr statement();
-    AST::FundefPtr fundef(AST::IdentifierPtr);
-    AST::FuncallPtr funcall(AST::IdentifierPtr);
-    AST::ExpressionPtr expression();
-    AST::NumberPtr number();
+  Token              previous = { };
+  Token              current  = { };
+  Scanner            scanner;
 
-    Token previous = {};
-    Token current = {};
-    Scanner scanner;
+  bool               panicMode = false;
+};
 
-    bool panicMode = false;
-  };
-
-}
+}     // namespace ThisFunc
 
 #endif /* PARSER_H */

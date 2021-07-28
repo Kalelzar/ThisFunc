@@ -2,10 +2,9 @@
 #define CONSTANT_H
 
 namespace ThisFunc::VM {
-  using Constant = double;
+using Constant = double;
 
 }
-
 
 
 #endif /* CONSTANT_H */

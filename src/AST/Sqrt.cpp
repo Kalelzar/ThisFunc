@@ -1,27 +1,28 @@
-#include "ThisFunc/AST.hpp"
+#include <ThisFunc/AST.hpp>
 #include <ThisFunc/ExtendedAST.hpp>
-
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 namespace ThisFunc::AST {
 
-void Sqrt::print() {
+void Sqrt::print ( ) {
   std::cout << "(√ ";
-  value->print();
+  value->print ( );
   std::cout << ")";
 }
 
-ElementPtr Sqrt::optimal() {
-  ElementPtr val = value->optimal();
+ElementPtr Sqrt::optimal ( ) {
+  ElementPtr val = value->optimal ( );
 
-  if (value->isNumber()) {
-    double num = ptr_cast<Number>(val)->number;
-    return std::make_shared<Number>(std::sqrt(num));
+  if (value->isNumber ( )) {
+    double num = ptr_cast<Number> (val)->number;
+    return std::make_shared<Number> (std::sqrt (num), line, column);
   }
-  return std::make_shared<Sqrt>(ptr_cast<Expression>(val));
+  return std::make_shared<Sqrt> (ptr_cast<Expression> (val), line, column);
 }
 
-void Sqrt::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+void Sqrt::compile (VM::Chunk* chunk) {
+  chunk->write (VM::NOOP, {line, column});
+}
 
-} // namespace ThisFunc::AST
+}     // namespace ThisFunc::AST

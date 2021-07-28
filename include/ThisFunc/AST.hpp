@@ -1,134 +1,160 @@
 #ifndef AST_H
 #define AST_H
 
+#include <ThisFunc/Chunk.hpp>
 #include <list>
 #include <memory>
 #include <string>
 #include <type_traits>
 
-#include <ThisFunc/Chunk.hpp>
-
 namespace ThisFunc {
 namespace AST {
 
-template <class A> using ASTPointer = std::shared_ptr<A>;
+  template<class A> using ASTPointer = std::shared_ptr<A>;
 
-class Element {
-public:
+  class Element {
+    public:
+    /**
+     * @brief      Print the AST node to stdout
+     *
+     * @details    Uses a Lisp-like syntax.
+     */
+    virtual void print ( )            = 0;
+
+    virtual void compile (VM::Chunk*) = 0;
+
+    Element (u32 line, u32 column) : line (line), column (column) { }
+
+    /**
+     * @brief      Return an optimal version of the AST node
+     */
+    virtual ASTPointer<Element> optimal ( ) = 0;
+    /// @brief Returns true if the instance is and instance of Number and false
+    /// otherwise
+    virtual bool                isNumber ( ) { return false; }
+    /// @brief Returns true if the instance is and instance of Identifier and
+    /// false otherwise
+    virtual bool                isIdentifier ( ) { return false; }
+
+    u32                         line, column;
+  };
+
   /**
-   * @brief      Print the AST node to stdout
+   * @brief      Casts an ASTPointer<B> into ASTPointer<A>
    *
-   * @details    Uses a Lisp-like syntax.
+   * @details    A wrapper around std::static_pointer_cast that ensures the
+   *             arguments are ASTPointer for better static type-checking
+   *
+   *
+   * @param      b the old pointer
+   * @type_param A the type of the new pointer
+   * @type_param B the type of the old pointer
+   * @return     the new pointer
    */
-  virtual void print() = 0;
+  template<typename A, typename B>
+  AST::ASTPointer<A> ptr_cast (AST::ASTPointer<B> b) {
+    return std::static_pointer_cast<A> (b);
+  }
 
-  virtual void compile(VM::Chunk*) = 0;
+  using ElementPtr = ASTPointer<Element>;
 
-  /**
-   * @brief      Return an optimal version of the AST node
-   */
-  virtual ASTPointer<Element> optimal() = 0;
-  /// @brief Returns true if the instance is and instance of Number and false
-  /// otherwise
-  virtual bool isNumber() { return false; }
-  /// @brief Returns true if the instance is and instance of Identifier and
-  /// false otherwise
-  virtual bool isIdentifier() { return false; }
-};
+  class Statement : public Element {
+    public:
+    Statement (u32 line, u32 column) : Element (line, column) { }
+  };
 
-/**
- * @brief      Casts an ASTPointer<B> into ASTPointer<A>
- *
- * @details    A wrapper around std::static_pointer_cast that ensures the
- *             arguments are ASTPointer for better static type-checking
- *
- *
- * @param      b the old pointer
- * @type_param A the type of the new pointer
- * @type_param B the type of the old pointer
- * @return     the new pointer
- */
-template <typename A, typename B>
-AST::ASTPointer<A> ptr_cast(AST::ASTPointer<B> b) {
-  return std::static_pointer_cast<A>(b);
-}
+  using StatementPtr = ASTPointer<Statement>;
 
-using ElementPtr = ASTPointer<Element>;
+  class Expression : public Statement {
+    public:
+    using super = Expression;
+    Expression (u32 line, u32 column) : Statement (line, column) { }
+  };
+  using ExpressionPtr = ASTPointer<Expression>;
 
-class Statement : public Element {};
+  class Number : public Expression {
+    public:
+    Number (double number, u32 line, u32 column)
+        : number (number)
+        , super (line, column) { }
 
-using StatementPtr = ASTPointer<Statement>;
+    double              number;
+    void                print ( ) override;
+    void                compile (VM::Chunk*) override;
+    ASTPointer<Element> optimal ( ) override;
+    bool                isNumber ( ) override { return true; }
+  };
 
-class Expression : public Statement {};
-using ExpressionPtr = ASTPointer<Expression>;
+  using NumberPtr = ASTPointer<Number>;
 
-class Number : public Expression {
-public:
-  Number(double number) : number(number) {}
+  class Identifier : public Expression {
+    public:
+    Identifier (std::string&, u32 line, u32 column) = delete;
+    Identifier (std::string&& identifier, u32 line, u32 column)
+        : identifier (identifier)
+        , super (line, column) { }
 
-  double number;
-  void print() override;
-  void compile(VM::Chunk*) override;
-  ASTPointer<Element> optimal() override;
-  bool isNumber() override { return true; }
-};
+    void                print ( ) override;
+    ASTPointer<Element> optimal ( ) override;
+    void                compile (VM::Chunk*) override;
+    std::string         identifier;
+    bool                isIdentifier ( ) override { return true; }
+  };
 
-using NumberPtr = ASTPointer<Number>;
+  using IdentifierPtr = ASTPointer<Identifier>;
 
-class Identifier : public Expression {
-public:
-  Identifier(std::string &) = delete;
-  Identifier(std::string &&identifier) : identifier(identifier) {}
+  class Funcall : public Expression {
+    public:
+    Funcall (IdentifierPtr              name,
+             std::list<ExpressionPtr>&& args,
+             u32                        line,
+             u32                        column)
+        : name (name)
+        , args (args)
+        , super (line, column) { }
 
-  void print() override;
-  ASTPointer<Element> optimal() override;
-  void compile(VM::Chunk*) override;
-  std::string identifier;
-  bool isIdentifier() override { return true; }
-};
+    IdentifierPtr            name;
+    std::list<ExpressionPtr> args;
+    void                     print ( ) override;
+    void                     compile (VM::Chunk*) override;
+    ASTPointer<Element>      optimal ( ) override;
+  };
 
-using IdentifierPtr = ASTPointer<Identifier>;
+  using FuncallPtr = ASTPointer<Funcall>;
 
-class Funcall : public Expression {
-public:
-  Funcall(IdentifierPtr name, std::list<ExpressionPtr> &&args)
-      : name(name), args(args) {}
+  class Fundef : public Statement {
+    public:
+    Fundef (IdentifierPtr name, ExpressionPtr body, u32 line, u32 column)
+        : name (name)
+        , body (body)
+        , Statement (line, column) { }
 
-  IdentifierPtr name;
-  std::list<ExpressionPtr> args;
-  void print() override;
-  void compile(VM::Chunk*) override;
-  ASTPointer<Element> optimal() override;
-};
+    void                print ( ) override;
+    ASTPointer<Element> optimal ( ) override;
+    void                compile (VM::Chunk*) override;
+    IdentifierPtr       name;
+    ExpressionPtr       body;
+  };
 
-using FuncallPtr = ASTPointer<Funcall>;
+  using FundefPtr = ASTPointer<Fundef>;
 
-class Fundef : public Statement {
-public:
-  Fundef(IdentifierPtr name, ExpressionPtr body) : name(name), body(body) {}
+  class Body : public Element {
+    public:
+    void       print ( ) override;
+    ElementPtr optimal ( ) override;
+    void       compile (VM::Chunk*) override;
+    Body (std::list<StatementPtr>& statements, u32 line, u32 column)
+        : statements (statements)
+        , Element (line, column) { }
+    Body (std::list<StatementPtr>&& statements, u32 line, u32 column)
+        : statements (statements)
+        , Element (line, column) { }
+    std::list<StatementPtr> statements;
+  };
 
-  void print() override;
-  ASTPointer<Element> optimal() override;
-  void compile(VM::Chunk*) override;
-  IdentifierPtr name;
-  ExpressionPtr body;
-};
+  using BodyPtr = ASTPointer<Body>;
 
-using FundefPtr = ASTPointer<Fundef>;
-
-class Body : public Element {
-public:
-  void print() override;
-  ElementPtr optimal() override;
-  void compile(VM::Chunk*) override;
-  Body(std::list<StatementPtr> &statements) : statements(statements) {}
-  Body(std::list<StatementPtr> &&statements) : statements(statements) {}
-  std::list<StatementPtr> statements;
-};
-
-using BodyPtr = ASTPointer<Body>;
-
-} // namespace AST
-} // namespace ThisFunc
+}     // namespace AST
+}     // namespace ThisFunc
 
 #endif /* AST_H */

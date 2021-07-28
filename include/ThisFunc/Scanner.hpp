@@ -1,16 +1,16 @@
 #ifndef SCANNER_H
 #define SCANNER_H
 
-#include <string>
+#include "Token.hpp"
 #include <istream>
 #include <queue>
-#include "Token.hpp"
+#include <string>
 
 namespace ThisFunc {
 
 class Scanner {
-public:
-  Scanner(std::istream* input) : input(input) {}
+  public:
+  Scanner (std::istream* input) : input (input) { }
 
   /**
    * @brief      Return the next token
@@ -21,14 +21,13 @@ public:
    *             May return an error in the form of an Token with TokenType of
    *             TokenType::Error.
    */
-  Token scan();
+  Token scan ( );
 
-private:
-
+  private:
   std::istream* input;
-  std::string buffer;
-  u32 line = 0;
-  u32 column = 0;
+  std::string   buffer;
+  u32           line   = 0;
+  u32           column = 0;
 
   /**
    * @brief      Create a token of the given type.
@@ -39,45 +38,44 @@ private:
    *
    * @return     Token
    */
-  Token makeToken(TokenType type);
-  Token makeError(std::string const& message) const;
-  Token makeErrorf(std::string const& message) const;
-  Token makeError(std::string const&& message) const;
+  Token         makeToken (TokenType type);
+  Token         makeError (std::string const& message) const;
+  Token         makeErrorf (std::string const& message) const;
+  Token         makeError (std::string const&& message) const;
 
   /**
    * @brief      Return the next character from the stream.
    *
    * @details    Read the next character into the buffer and return it.
    */
-  char next();
+  char          next ( );
 
   /**
    * @brief      Same as next() but doesn't add read char to buffer.
    */
-  void skip();
+  void          skip ( );
 
   /**
    * @brief      Return the previously consumed character from the stream.
    *
    * @details    Returns the last character of the buffer.
    */
-  char prev() const;
+  char          prev ( ) const;
 
   /**
    * @brief      Peek at the next character from the stream.
    */
-  char peek() const noexcept;
+  char          peek ( ) const noexcept;
 
-  bool isAtEnd() const;
-  bool match(char const& b);
+  bool          isAtEnd ( ) const;
+  bool          match (char const& b);
 
-  void eatWhitespace();
+  void          eatWhitespace ( );
 
-  Token number();
-  Token identifier();
-
+  Token         number ( );
+  Token         identifier ( );
 };
 
-} // namespace ThisFunc
+}     // namespace ThisFunc
 
 #endif /* SCANNER_H */

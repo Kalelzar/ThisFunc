@@ -1,38 +1,39 @@
-#include "ThisFunc/AST.hpp"
+#include <ThisFunc/AST.hpp>
 #include <ThisFunc/ExtendedAST.hpp>
-
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 namespace ThisFunc::AST {
 
-void If::print() {
+void If::print ( ) {
   std::cout << "(if ";
-  cond->print();
+  cond->print ( );
   std::cout << " ";
-  ifTrue->print();
+  ifTrue->print ( );
   std::cout << " ";
-  ifFalse->print();
+  ifFalse->print ( );
   std::cout << ")";
 }
 
-ElementPtr If::optimal() {
-  ElementPtr newCond = cond->optimal();
+ElementPtr If::optimal ( ) {
+  ElementPtr newCond = cond->optimal ( );
 
-  if (cond->isNumber()) {
-    double eval = ptr_cast<Number>(cond)->number;
-    if(std::fabs(eval) <= 1E-6) {
-      return ifFalse->optimal();
-    }else{
-      return ifTrue->optimal();
+  if (cond->isNumber ( )) {
+    double eval = ptr_cast<Number> (cond)->number;
+    if (std::fabs (eval) <= 1E-6) {
+      return ifFalse->optimal ( );
+    } else {
+      return ifTrue->optimal ( );
     }
   }
 
-  return std::make_shared<If>(ptr_cast<Expression>(newCond),
-                              ptr_cast<Expression>(ifTrue->optimal()),
-                              ptr_cast<Expression>(ifFalse->optimal()));
+  return std::make_shared<If> (ptr_cast<Expression> (newCond),
+                               ptr_cast<Expression> (ifTrue->optimal ( )),
+                               ptr_cast<Expression> (ifFalse->optimal ( )),
+                               line,
+                               column);
 }
 
-void If::compile(VM::Chunk *chunk) { chunk->write(VM::NOOP, {0, 0}); }
+void If::compile (VM::Chunk* chunk) { chunk->write (VM::NOOP, {line, column}); }
 
-} // namespace ThisFunc::AST
+}     // namespace ThisFunc::AST

@@ -5,19 +5,19 @@
 
 namespace ThisFunc {
 class Interpreter {
-public:
-  Interpreter(AST::BodyPtr body) : body(body) {}
+  public:
+  Interpreter (AST::BodyPtr body) : body (body) { }
 
   //  void resolve();
   //  void specialize();
 
   //  void trueConstants();
-  void precalculate();
-  void print();
+  void precalculate ( );
+  void print ( );
 
-private:
+  private:
   AST::BodyPtr body;
 };
-} // namespace ThisFunc
+}     // namespace ThisFunc
 
 #endif /* INTERPRETER_H */

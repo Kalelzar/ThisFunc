@@ -6,16 +6,14 @@
 
 namespace ThisFunc {
 
-  class Compiler {
+class Compiler {
 
   private:
-
   public:
-    bool compile(std::istream*, VM::Chunk*);
+  bool compile (std::istream*, VM::Chunk*);
+};
 
-  };
-
-}
+}     // namespace ThisFunc
 
 
 #endif /* COMPILER_H */

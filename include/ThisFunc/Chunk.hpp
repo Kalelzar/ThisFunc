@@ -1,9 +1,9 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
+#include <Kal/defs.hpp>
 #include <ThisFunc/Constant.hpp>
 #include <ThisFunc/DynArray.hpp>
-#include <ThisFunc/defs.hpp>
 
 namespace ThisFunc::VM {
 
@@ -24,38 +24,32 @@ struct CodeLocation {
 };
 
 class Chunk : public DynArray<Byte> {
-public:
-
-
-  explicit Chunk() {
-    locations = DynArray<CodeLocation>();
-    constants = DynArray<Constant>();
+  public:
+  explicit Chunk ( ) {
+    locations = DynArray<CodeLocation> ( );
+    constants = DynArray<Constant> ( );
   };
 
-  Constant getConstant(u32 address) const { return constants[address]; }
-  u32 addConstant(Constant c) { return constants.write(c); }
+  Constant getConstant (u32 address) const { return constants[address]; }
+  u32      addConstant (Constant c) { return constants.write (c); }
 
-  u32 write(Byte next, CodeLocation location) {
-    locations.write(location);
-    return write(next);
+  u32      write (Byte next, CodeLocation location) {
+    locations.write (location);
+    return write (next);
   }
 
-  const CodeLocation operator()(u32 index) const {
-    return locations[index];
-  }
+  const CodeLocation operator( ) (u32 index) const { return locations[index]; }
 
-  CodeLocation operator()(u32 index) {
-    return locations[index];
-  }
+  CodeLocation       operator( ) (u32 index) { return locations[index]; }
 
-protected:
+  protected:
   using DynArray<Byte>::write;
 
-private:
+  private:
   DynArray<CodeLocation> locations;
-  DynArray<Constant> constants;
+  DynArray<Constant>     constants;
 };
 
-} // namespace ThisFunc::VM
+}     // namespace ThisFunc::VM
 
 #endif /* CHUNK_H */

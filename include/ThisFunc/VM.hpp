@@ -9,25 +9,28 @@
 namespace ThisFunc::VM {
 
 class VM {
-private:
-  Chunk* chunk;
-  Byte *instructionPointer;
-  Byte *start;
-  Constant stack[STACK_MAX];
+  private:
+  Chunk*    chunk;
+  Byte*     instructionPointer;
+  Byte*     start;
+  Constant  stack[STACK_MAX];
   Constant* stackTop;
 
-  void push(Constant c);
-  Constant pop();
+  void      push (Constant c);
+  Constant  pop ( );
 
-  bool run();
+  bool      run ( );
 
-public:
+  public:
+  VM ( )
+      : instructionPointer (nullptr)
+      , start (nullptr)
+      , stackTop (stack)
+      , chunk (nullptr) { }
 
-  VM() : instructionPointer(nullptr), start(nullptr), stackTop(stack), chunk(nullptr) {}
-
-  bool interpret(Chunk* chunk);
+  bool interpret (Chunk* chunk);
 };
 
-} // namespace ThisFunc::VM
+}     // namespace ThisFunc::VM
 
 #endif /* VM_H */
