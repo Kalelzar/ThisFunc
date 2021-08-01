@@ -5,10 +5,10 @@
 
 namespace ThisFunc::AST {
 
-void Sqrt::print ( ) {
-  std::cout << "(√ ";
-  value->print ( );
-  std::cout << ")";
+void Sqrt::print (std::ostream* out) {
+  *out << "(sqrt ";
+  value->print (out);
+  *out << ")";
 }
 
 ElementPtr Sqrt::optimal ( ) {

@@ -6,12 +6,12 @@
 
 namespace ThisFunc::AST {
 
-void Add::print ( ) {
-  std::cout << "(+ ";
-  lhs->print ( );
-  std::cout << " ";
-  rhs->print ( );
-  std::cout << ")";
+void Add::print (std::ostream* out) {
+  *out << "(+ ";
+  lhs->print (out);
+  *out << " ";
+  rhs->print (out);
+  *out << ")";
 }
 
 void Add::compile (VM::Chunk* chunk) {

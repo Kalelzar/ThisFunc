@@ -3,12 +3,18 @@
 
 namespace ThisFunc::AST {
 
-void Fundef::print ( ) {
-  std::cout << "(defun ";
-  name->print ( );
-  std::cout << " ";
-  body->print ( );
-  std::cout << ")";
+void Fundef::print (std::ostream* out) {
+  *out << "\"\")\n(defun ";
+  name->print (out);
+  *out << " (";
+  for (u32 i = 0; i < arity ( ); i++) {
+    *out << "_" << i;
+    if (i != arity ( ) - 1) *out << " ";
+  }
+  *out << ") ";
+  body->print (out);
+  *out << ")(progn";
+}
 }
 
 ElementPtr Fundef::optimal ( ) {

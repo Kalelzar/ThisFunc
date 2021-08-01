@@ -5,14 +5,14 @@
 
 namespace ThisFunc::AST {
 
-void Funcall::print ( ) {
-  std::cout << "(";
-  name->print ( );
+void Funcall::print (std::ostream* out) {
+  *out << "(";
+  name->print (out);
   for (auto& arg : args) {
-    std::cout << " ";
-    arg->print ( );
+    *out << " ";
+    arg->print (out);
   }
-  std::cout << ")";
+  *out << ")";
 }
 
 void Funcall::compile (VM::Chunk* chunk) {

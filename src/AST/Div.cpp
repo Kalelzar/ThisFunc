@@ -8,12 +8,12 @@
 
 namespace ThisFunc::AST {
 
-void Div::print ( ) {
-  std::cout << "(/ ";
-  lhs->print ( );
-  std::cout << " ";
-  rhs->print ( );
-  std::cout << ")";
+void Div::print (std::ostream* out) {
+  *out << "(/ ";
+  lhs->print (out);
+  *out << " ";
+  rhs->print (out);
+  *out << ")";
 }
 
 void Div::compile (VM::Chunk* chunk) {

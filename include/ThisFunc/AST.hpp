@@ -19,7 +19,13 @@ namespace AST {
      *
      * @details    Uses a Lisp-like syntax.
      */
-    virtual void print ( )            = 0;
+    void         print ( ) { print (&std::cout); }
+    /**
+     * @brief      Print the AST node to the provided std::ostream
+     *
+     * @details    Uses a Lisp-like syntax.
+     */
+    virtual void print (std::ostream*) = 0;
 
     virtual void compile (VM::Chunk*) = 0;
 
@@ -79,7 +85,7 @@ namespace AST {
         , super (line, column) { }
 
     double              number;
-    void                print ( ) override;
+    void                print (std::ostream*) override;
     void                compile (VM::Chunk*) override;
     ASTPointer<Element> optimal ( ) override;
     bool                isNumber ( ) override { return true; }
@@ -94,7 +100,7 @@ namespace AST {
         : identifier (identifier)
         , super (line, column) { }
 
-    void                print ( ) override;
+    void                print (std::ostream*) override;
     ASTPointer<Element> optimal ( ) override;
     void                compile (VM::Chunk*) override;
     std::string         identifier;
@@ -115,7 +121,7 @@ namespace AST {
 
     IdentifierPtr            name;
     std::list<ExpressionPtr> args;
-    void                     print ( ) override;
+    void                     print (std::ostream*) override;
     void                     compile (VM::Chunk*) override;
     ASTPointer<Element>      optimal ( ) override;
   };
@@ -129,7 +135,7 @@ namespace AST {
         , body (body)
         , Statement (line, column) { }
 
-    void                print ( ) override;
+    void                print (std::ostream*) override;
     ASTPointer<Element> optimal ( ) override;
     void                compile (VM::Chunk*) override;
     IdentifierPtr       name;
@@ -140,7 +146,7 @@ namespace AST {
 
   class Body : public Element {
     public:
-    void       print ( ) override;
+    void       print (std::ostream*) override;
     ElementPtr optimal ( ) override;
     void       compile (VM::Chunk*) override;
     Body (std::list<StatementPtr>& statements, u32 line, u32 column)

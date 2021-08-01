@@ -5,10 +5,10 @@
 
 namespace ThisFunc::AST {
 
-void Tail::print ( ) {
-  std::cout << "(tail ";
-  value->print ( );
-  std::cout << ")";
+void Tail::print (std::ostream* out) {
+  *out << "(cdr ";
+  value->print (out);
+  *out << ")";
 }
 
 ElementPtr Tail::optimal ( ) {

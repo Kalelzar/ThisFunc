@@ -5,17 +5,17 @@
 
 namespace ThisFunc::AST {
 
-void Sin::print ( ) {
-  std::cout << "(sin ";
-  value->print ( );
-  std::cout << ")";
+void Sin::print (std::ostream* out) {
+  *out << "(sin ";
+  value->print (out);
+  *out << ")";
 }
 
 /**
  * @copydoc Element::optimal
  * @details An optimal Sin is one which:
  <br>1) if it's argument optimizes to a Number: A Number
- containing the sine of the argument
+ contaouting the sine of the argument
  <br>2) otherwise: a Sin with an optimal argument
 */
 ElementPtr Sin::optimal ( ) {

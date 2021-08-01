@@ -6,12 +6,12 @@
 
 namespace ThisFunc::AST {
 
-void Eq::print ( ) {
-  std::cout << "(= ";
-  lhs->print ( );
-  std::cout << " ";
-  rhs->print ( );
-  std::cout << ")";
+void Eq::print (std::ostream* out) {
+  *out << "(= ";
+  lhs->print (out);
+  *out << " ";
+  rhs->print (out);
+  *out << ")";
 }
 
 void Eq::compile (VM::Chunk* chunk) { chunk->write (VM::NOOP, {line, column}); }

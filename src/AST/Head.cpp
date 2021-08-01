@@ -6,10 +6,10 @@
 
 namespace ThisFunc::AST {
 
-void Head::print ( ) {
-  std::cout << "(head ";
-  value->print ( );
-  std::cout << ")";
+void Head::print (std::ostream* out) {
+  *out << "(car ";
+  value->print (out);
+  *out << ")";
 }
 
 ElementPtr Head::optimal ( ) {

@@ -5,13 +5,13 @@
 
 namespace ThisFunc::AST {
 
-void List::print ( ) {
-  std::cout << "'(";
+void List::print (std::ostream* out) {
+  *out << "(list ";
   for (auto& element : values) {
-    if (element != values.front ( )) std::cout << " ";
-    element->print ( );
+    if (element != values.front ( )) *out << " ";
+    element->print (out);
   }
-  std::cout << ")";
+  *out << ")";
 }
 
 ElementPtr List::optimal ( ) {

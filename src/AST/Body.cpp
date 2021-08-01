@@ -4,10 +4,11 @@
 
 namespace ThisFunc::AST {
 
-void Body::print ( ) {
+void Body::print (std::ostream* out) {
   for (auto& s : statements) {
-    s->print ( );
-    std::cout << std::endl;
+    *out << "(print ";
+    s->print (out);
+    *out << ")" << std::endl;
   }
 }
 

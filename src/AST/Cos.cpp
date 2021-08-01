@@ -5,10 +5,10 @@
 
 namespace ThisFunc::AST {
 
-void Cos::print ( ) {
-  std::cout << "(cos ";
-  value->print ( );
-  std::cout << ")";
+void Cos::print (std::ostream* out) {
+  *out << "(cos ";
+  value->print (out);
+  *out << ")";
 }
 
 void Cos::compile (VM::Chunk* chunk) {

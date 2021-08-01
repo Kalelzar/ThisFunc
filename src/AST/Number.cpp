@@ -4,7 +4,7 @@
 
 namespace ThisFunc::AST {
 
-void       Number::print ( ) { std::cout << number; }
+void       Number::print (std::ostream* out) { *out << number; }
 
 ElementPtr Number::optimal ( ) { return std::make_shared<Number> (*this); }
 

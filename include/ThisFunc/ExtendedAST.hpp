@@ -19,7 +19,7 @@ class Add : public SpecializedExpression {
       , rhs (rhs)
       , super (line, column) { }
   ExpressionPtr lhs, rhs;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -31,7 +31,7 @@ class Sub : public SpecializedExpression {
       , rhs (rhs)
       , super (line, column) { }
   ExpressionPtr lhs, rhs;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -43,7 +43,7 @@ class Mul : public SpecializedExpression {
       , rhs (rhs)
       , super (line, column) { }
   ExpressionPtr lhs, rhs;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -53,9 +53,9 @@ class Div : public SpecializedExpression {
   Div (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
       , rhs (rhs)
-      , super (line, column) { }
+      , super ({rhs, lhs}, line, column) { }
   ExpressionPtr lhs, rhs;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -67,7 +67,7 @@ class Pow : public SpecializedExpression {
       , rhs (rhs)
       , super (line, column) { }
   ExpressionPtr lhs, rhs;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -79,7 +79,7 @@ class Eq : public SpecializedExpression {
       , rhs (rhs)
       , super (line, column) { }
   ExpressionPtr lhs, rhs;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -91,7 +91,7 @@ class Nand : public SpecializedExpression {
       , rhs (rhs)
       , super (line, column) { }
   ExpressionPtr lhs, rhs;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -103,7 +103,7 @@ class Le : public SpecializedExpression {
       , rhs (rhs)
       , super (line, column) { }
   ExpressionPtr lhs, rhs;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -120,7 +120,7 @@ class If : public SpecializedExpression {
       , ifFalse (ifFalse)
       , super (line, column) { }
   ExpressionPtr cond, ifTrue, ifFalse;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -131,7 +131,7 @@ class Sqrt : public SpecializedExpression {
       : value (value)
       , super (line, column){ };
   ExpressionPtr value;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -142,7 +142,7 @@ class Sin : public SpecializedExpression {
       : value (value)
       , super (line, column){ };
   ExpressionPtr value;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -153,7 +153,7 @@ class Cos : public SpecializedExpression {
       : value (value)
       , super (line, column){ };
   ExpressionPtr value;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };
@@ -167,7 +167,7 @@ class List : public SpecializedExpression {
       : values (values)
       , super (line, column){ };
   std::list<ExpressionPtr> values;
-  void                     print ( ) override;
+  void                     print (std::ostream*) override;
   void                     compile (VM::Chunk*) override;
   ElementPtr               optimal ( ) override;
 };
@@ -180,7 +180,7 @@ class Head : public SpecializedExpression {
       : value (value)
       , super (line, column){ };
   ListPtr    value;
-  void       print ( ) override;
+  void       print (std::ostream*) override;
   void       compile (VM::Chunk*) override;
   ElementPtr optimal ( ) override;
 };
@@ -191,7 +191,7 @@ class Tail : public SpecializedExpression {
       : value (value)
       , super (line, column){ };
   ListPtr    value;
-  void       print ( ) override;
+  void       print (std::ostream*) override;
   void       compile (VM::Chunk*) override;
   ElementPtr optimal ( ) override;
 };
@@ -204,7 +204,7 @@ class Map : public SpecializedExpression {
       , super (line, column) { }
   IdentifierPtr funname;
   ListPtr       list;
-  void          print ( ) override;
+  void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
   ElementPtr    optimal ( ) override;
 };

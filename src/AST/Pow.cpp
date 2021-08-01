@@ -5,12 +5,12 @@
 
 namespace ThisFunc::AST {
 
-void Pow::print ( ) {
-  std::cout << "(^ ";
-  lhs->print ( );
-  std::cout << " ";
-  rhs->print ( );
-  std::cout << ")";
+void Pow::print (std::ostream* out) {
+  *out << "(pow ";
+  lhs->print (out);
+  *out << " ";
+  rhs->print (out);
+  *out << ")";
 }
 
 ElementPtr Pow::optimal ( ) {

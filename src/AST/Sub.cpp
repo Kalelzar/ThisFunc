@@ -5,12 +5,12 @@
 
 namespace ThisFunc::AST {
 
-void Sub::print ( ) {
-  std::cout << "(- ";
-  lhs->print ( );
-  std::cout << " ";
-  rhs->print ( );
-  std::cout << ")";
+void Sub::print (std::ostream* out) {
+  *out << "(- ";
+  lhs->print (out);
+  *out << " ";
+  rhs->print (out);
+  *out << ")";
 }
 
 ElementPtr Sub::optimal ( ) {

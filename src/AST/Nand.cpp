@@ -6,12 +6,12 @@
 
 namespace ThisFunc::AST {
 
-void Nand::print ( ) {
-  std::cout << "(!&& ";
-  lhs->print ( );
-  std::cout << " ";
-  rhs->print ( );
-  std::cout << ")";
+void Nand::print (std::ostream* out) {
+  *out << "(not (and";
+  lhs->print (out);
+  *out << " ";
+  rhs->print (out);
+  *out << "))";
 }
 
 ElementPtr Nand::optimal ( ) {

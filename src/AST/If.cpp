@@ -5,14 +5,14 @@
 
 namespace ThisFunc::AST {
 
-void If::print ( ) {
-  std::cout << "(if ";
-  cond->print ( );
-  std::cout << " ";
-  ifTrue->print ( );
-  std::cout << " ";
-  ifFalse->print ( );
-  std::cout << ")";
+void If::print (std::ostream* out) {
+  *out << "(if ";
+  cond->print (out);
+  *out << " ";
+  ifTrue->print (out);
+  *out << " ";
+  ifFalse->print (out);
+  *out << ")";
 }
 
 ElementPtr If::optimal ( ) {

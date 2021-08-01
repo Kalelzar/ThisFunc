@@ -6,12 +6,12 @@
 
 namespace ThisFunc::AST {
 
-void Map::print ( ) {
-  std::cout << "(map ";
-  funname->print ( );
-  std::cout << " ";
-  list->print ( );
-  std::cout << ")";
+void Map::print (std::ostream* out) {
+  *out << "(mapcar #'";
+  funname->print (out);
+  *out << " ";
+  list->print (out);
+  *out << ")";
 }
 
 ElementPtr Map::optimal ( ) {

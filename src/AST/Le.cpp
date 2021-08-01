@@ -5,12 +5,12 @@
 
 namespace ThisFunc::AST {
 
-void Le::print ( ) {
-  std::cout << "(<= ";
-  lhs->print ( );
-  std::cout << " ";
-  rhs->print ( );
-  std::cout << ")";
+void Le::print (std::ostream* out) {
+  *out << "(< ";
+  lhs->print (out);
+  *out << " ";
+  rhs->print (out);
+  *out << ")";
 }
 
 ElementPtr Le::optimal ( ) {
