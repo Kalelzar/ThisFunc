@@ -12,8 +12,9 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 add_subdirectory(src)
 
 add_executable(ThisFunc_main exec/main.cpp)
-
+add_executable(tfl exec/tooling/tfl.cpp)
 target_link_libraries(ThisFunc_main PUBLIC ThisFunc)
+target_link_libraries(tfl PUBLIC ThisFunc)
 
 add_subdirectory(test)
 add_subdirectory(bench)
