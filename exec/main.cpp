@@ -2,9 +2,9 @@
 #include <ThisFunc/Chunk.hpp>
 #include <ThisFunc/Compiler.hpp>
 #include <ThisFunc/Disassembler.hpp>
-#include <ThisFunc/Interpreter.hpp>
 #include <ThisFunc/Parser.hpp>
 #include <ThisFunc/VM.hpp>
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>

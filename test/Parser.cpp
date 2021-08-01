@@ -66,6 +66,20 @@ RC_GTEST_PROP (Parser, parametersCanBeModified, (i32 a)) {
   RC_ASSERT (head == a);
 }
 
+TEST (Parser, CallFunctionParameter) {
+  std::stringstream inout;
+  inout << "#0()";
+  Parser       parser (&inout);
+  AST::BodyPtr body = parser.parse ( );
+  ASSERT_FALSE (parser.hadError);
+  AST::FuncallPtr funcall
+    = AST::ptr_cast<AST::Funcall> (body->statements.front ( ));
+  std::string funname
+    = AST::ptr_cast<AST::Identifier> (funcall->name)->identifier;
+  ASSERT_EQ (funname, "#0");
+  ASSERT_EQ (funcall->args.size ( ), 0);
+}
+
 TEST (Parser, youCanPassFunctionsAsArguments) {
   std::stringstream inout;
   inout << "lambda(epsilon)";

@@ -68,15 +68,15 @@ char Scanner::next ( ) {
 }
 
 char Scanner::peek ( ) const noexcept {
-  if (isAtEnd ( )) { return '\0'; }
+  if (isAtEnd ( )) return '\0';
 
   return input->peek ( );
 };
 
 char Scanner::prev ( ) const {
-  if (buffer.empty ( )) {
+  if (buffer.empty ( ))
     throw ScannerException ("Calling prev() with an empty buffer.");
-  }
+
 
   return buffer.back ( );
 }
