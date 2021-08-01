@@ -5,10 +5,16 @@
 
 namespace ThisFunc::AST {
 
-class SpecializedExpression : public Expression {
+
+class SpecializedExpression : public Funcall {
+
+  private:
+  static IdentifierPtr spec;
+
 
   public:
-  SpecializedExpression (u32 line, u32 column) : Expression (line, column) { }
+  SpecializedExpression (std::list<ExpressionPtr> args, u32 line, u32 column)
+      : Funcall (spec, std::move (args), line, column) { }
   using super = SpecializedExpression;
 };
 
@@ -17,7 +23,7 @@ class Add : public SpecializedExpression {
   Add (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
       , rhs (rhs)
-      , super (line, column) { }
+      , super ({rhs, lhs}, line, column) { }
   ExpressionPtr lhs, rhs;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -29,7 +35,7 @@ class Sub : public SpecializedExpression {
   Sub (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
       , rhs (rhs)
-      , super (line, column) { }
+      , super ({rhs, lhs}, line, column) { }
   ExpressionPtr lhs, rhs;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -41,7 +47,7 @@ class Mul : public SpecializedExpression {
   Mul (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
       , rhs (rhs)
-      , super (line, column) { }
+      , super ({rhs, lhs}, line, column) { }
   ExpressionPtr lhs, rhs;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -65,7 +71,7 @@ class Pow : public SpecializedExpression {
   Pow (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
       , rhs (rhs)
-      , super (line, column) { }
+      , super ({rhs, lhs}, line, column) { }
   ExpressionPtr lhs, rhs;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -77,7 +83,7 @@ class Eq : public SpecializedExpression {
   Eq (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
       , rhs (rhs)
-      , super (line, column) { }
+      , super ({rhs, lhs}, line, column) { }
   ExpressionPtr lhs, rhs;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -89,7 +95,7 @@ class Nand : public SpecializedExpression {
   Nand (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
       , rhs (rhs)
-      , super (line, column) { }
+      , super ({rhs, lhs}, line, column) { }
   ExpressionPtr lhs, rhs;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -101,7 +107,7 @@ class Le : public SpecializedExpression {
   Le (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
       , rhs (rhs)
-      , super (line, column) { }
+      , super ({rhs, lhs}, line, column) { }
   ExpressionPtr lhs, rhs;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -118,7 +124,7 @@ class If : public SpecializedExpression {
       : cond (cond)
       , ifTrue (ifTrue)
       , ifFalse (ifFalse)
-      , super (line, column) { }
+      , super ({cond, ifTrue, ifFalse}, line, column) { }
   ExpressionPtr cond, ifTrue, ifFalse;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -129,7 +135,7 @@ class Sqrt : public SpecializedExpression {
   public:
   Sqrt (ExpressionPtr value, u32 line, u32 column)
       : value (value)
-      , super (line, column){ };
+      , super ({value}, line, column){ };
   ExpressionPtr value;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -140,7 +146,7 @@ class Sin : public SpecializedExpression {
   public:
   Sin (ExpressionPtr value, u32 line, u32 column)
       : value (value)
-      , super (line, column){ };
+      , super ({value}, line, column){ };
   ExpressionPtr value;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -151,7 +157,7 @@ class Cos : public SpecializedExpression {
   public:
   Cos (ExpressionPtr value, u32 line, u32 column)
       : value (value)
-      , super (line, column){ };
+      , super ({value}, line, column){ };
   ExpressionPtr value;
   void          print (std::ostream*) override;
   void          compile (VM::Chunk*) override;
@@ -162,10 +168,10 @@ class List : public SpecializedExpression {
   public:
   List (std::list<ExpressionPtr>& values, u32 line, u32 column)
       : values (values)
-      , super (line, column){ };
+      , super (values, line, column){ };
   List (std::list<ExpressionPtr>&& values, u32 line, u32 column)
       : values (values)
-      , super (line, column){ };
+      , super (values, line, column){ };
   std::list<ExpressionPtr> values;
   void                     print (std::ostream*) override;
   void                     compile (VM::Chunk*) override;
@@ -178,7 +184,7 @@ class Head : public SpecializedExpression {
   public:
   Head (ListPtr value, u32 line, u32 column)
       : value (value)
-      , super (line, column){ };
+      , super ({value}, line, column){ };
   ListPtr    value;
   void       print (std::ostream*) override;
   void       compile (VM::Chunk*) override;
@@ -189,7 +195,7 @@ class Tail : public SpecializedExpression {
   public:
   Tail (ListPtr value, u32 line, u32 column)
       : value (value)
-      , super (line, column){ };
+      , super ({value}, line, column){ };
   ListPtr    value;
   void       print (std::ostream*) override;
   void       compile (VM::Chunk*) override;
@@ -201,7 +207,7 @@ class Map : public SpecializedExpression {
   Map (IdentifierPtr funname, ListPtr list, u32 line, u32 column)
       : funname (funname)
       , list (list)
-      , super (line, column) { }
+      , super ({funname, list}, line, column) { }
   IdentifierPtr funname;
   ListPtr       list;
   void          print (std::ostream*) override;

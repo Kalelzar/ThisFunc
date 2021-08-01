@@ -27,7 +27,7 @@ namespace AST {
      */
     virtual void print (std::ostream*) = 0;
 
-    virtual void compile (VM::Chunk*) = 0;
+    virtual void compile (VM::Chunk*)  = 0;
 
     Element (u32 line, u32 column) : line (line), column (column) { }
 
@@ -45,6 +45,10 @@ namespace AST {
     u32                         line, column;
   };
 
+  template<class T>
+  concept ASTElement = std::is_base_of_v<Element, T>;
+
+
   /**
    * @brief      Casts an ASTPointer<B> into ASTPointer<A>
    *
@@ -57,7 +61,7 @@ namespace AST {
    * @type_param B the type of the old pointer
    * @return     the new pointer
    */
-  template<typename A, typename B>
+  template<ASTElement A, ASTElement B>
   AST::ASTPointer<A> ptr_cast (AST::ASTPointer<B> b) {
     return std::static_pointer_cast<A> (b);
   }
@@ -138,8 +142,12 @@ namespace AST {
     void                print (std::ostream*) override;
     ASTPointer<Element> optimal ( ) override;
     void                compile (VM::Chunk*) override;
+    const u32           arity ( );
     IdentifierPtr       name;
     ExpressionPtr       body;
+    private:
+    bool cached = false;
+    u32  _arity = 0;
   };
 
   using FundefPtr = ASTPointer<Fundef>;
