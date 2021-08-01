@@ -1,6 +1,7 @@
 #include <ThisFunc/AST.hpp>
+#include <cmath>
+#include <cstdio>
 #include <iostream>
-#include <unordered_set>
 
 namespace ThisFunc::AST {
 
@@ -17,26 +18,24 @@ void Fundef::print (std::ostream* out) {
   *out << ")(progn";
 }
 
-template<ASTElement T> std::unordered_set<std::string> walk (ASTPointer<T> t);
-template<> std::unordered_set<std::string> walk<Expression> (ExpressionPtr e);
-template<> std::unordered_set<std::string> walk<Number> (NumberPtr e) {
-  return std::move (std::unordered_set<std::string> ( ));
-}
-template<> std::unordered_set<std::string> walk<Identifier> (IdentifierPtr e) {
+template<ASTElement T> u32 walk (ASTPointer<T> t);
+template<> u32             walk<Expression> (ExpressionPtr e);
+template<> u32             walk<Number> (NumberPtr e) { return 0; }
+template<> u32             walk<Identifier> (IdentifierPtr e) {
   if (e->identifier.starts_with ("#")) {
-    std::unordered_set<std::string> set;
-    set.insert (e->identifier);
-    return std::move (set);
+    u32 arity;
+    sscanf (e->identifier.c_str ( ), "#%d", &arity);
+    return arity + 1;
   } else {
-    return std::move (std::unordered_set<std::string> ( ));
+    return 0;
   }
 }
-template<> std::unordered_set<std::string> walk<Funcall> (FuncallPtr e) {
-  std::unordered_set<std::string> set = walk (e->name);
-  for (auto& element : e->args) { set.merge (std::move (walk (element))); }
-  return std::move (set);
+template<> u32 walk<Funcall> (FuncallPtr e) {
+  u32 arity = walk (e->name);
+  for (auto& element : e->args) { arity = std::max (arity, walk (element)); }
+  return arity;
 }
-template<> std::unordered_set<std::string> walk<Expression> (ExpressionPtr e) {
+template<> u32 walk<Expression> (ExpressionPtr e) {
   if (e->isNumber ( ))
     return walk (ptr_cast<Number> (e));
   else if (e->isIdentifier ( ))
@@ -47,22 +46,7 @@ template<> std::unordered_set<std::string> walk<Expression> (ExpressionPtr e) {
 
 const u32 Fundef::arity ( ) {
   if (cached) return _arity;
-
-  std::unordered_set<std::string> set;
-  set = walk (body);
-
-  if (set.size ( ) == 0) {
-    _arity = 0;
-  } else {
-    u32 max = 0;
-
-    for (auto& e : set) {
-      u32 index = atoi ((e.c_str ( ) + 1));
-      if (max < index) max = index;
-    }
-    _arity = max + 1;
-  }
-
+  _arity = walk (body);
   cached = true;
   return _arity;
 }
