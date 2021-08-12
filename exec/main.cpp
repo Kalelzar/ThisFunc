@@ -31,6 +31,8 @@ int main (int argv, char** argc) {
       std::ifstream stream (argc[1]);
       return run (&stream);
     } else {
+      std::cout << "Press ctrl-d in order to run the code you have written."
+                << std::endl;
       return run (&std::cin);
     }
   } catch (std::runtime_error& e) {

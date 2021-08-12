@@ -23,7 +23,9 @@ AST::Resolver Compiler::compile (std::istream* in, VM::Chunk* bytecode) {
   AST::deduce (opt, s, r);
 
   opt->compile (bytecode, r);
+#ifndef NDEBUG
   VM::disassemble (*bytecode);
+#endif
   return r;
 }
 }     // namespace ThisFunc

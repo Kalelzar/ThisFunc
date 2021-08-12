@@ -65,7 +65,9 @@ void Fundef::compile (VM::Chunk* chunk, Resolver& resolver) {
   auto callable = resolver.call (name->identifier);
   body->compile (&(callable->chunk), resolver);
   callable->chunk.write (VM::OP_RETURN, {line, column});
+#ifndef NDEBUG
   VM::disassemble (callable->chunk);
+#endif
 }
 
 }     // namespace ThisFunc::AST
