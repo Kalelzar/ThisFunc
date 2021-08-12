@@ -2,6 +2,7 @@
 #define CHUNK_H
 
 #include <Kal/defs.hpp>
+#include <ThisFunc/CodeLocation.hpp>
 #include <ThisFunc/Constant.hpp>
 #include <ThisFunc/DynArray.hpp>
 
@@ -16,11 +17,6 @@ enum OpCode {
   OP_SUBTRACT,
   OP_MULTIPLY,
   OP_DIVIDE,
-};
-
-struct CodeLocation {
-  u32 line;
-  u32 column;
 };
 
 class Chunk : public DynArray<Byte> {

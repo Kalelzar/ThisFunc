@@ -9,16 +9,21 @@ namespace ThisFunc::AST {
 class SpecializedExpression : public Funcall {
 
   private:
-  static IdentifierPtr spec;
-
+  virtual IdentifierPtr spec ( ) {
+    return std::make_shared<Identifier> ("spec", 0, 0);
+  }
 
   public:
   SpecializedExpression (std::list<ExpressionPtr> args, u32 line, u32 column)
-      : Funcall (spec, std::move (args), line, column) { }
+      : Funcall (spec ( ), std::move (args), line, column) { }
   using super = SpecializedExpression;
 };
 
 class Add : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("add", 0, 0);
+  }
   public:
   Add (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
@@ -31,6 +36,10 @@ class Add : public SpecializedExpression {
 };
 
 class Sub : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("sub", 0, 0);
+  }
   public:
   Sub (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
@@ -43,6 +52,10 @@ class Sub : public SpecializedExpression {
 };
 
 class Mul : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("mul", 0, 0);
+  }
   public:
   Mul (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
@@ -55,6 +68,10 @@ class Mul : public SpecializedExpression {
 };
 
 class Div : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("div", 0, 0);
+  }
   public:
   Div (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
@@ -67,6 +84,10 @@ class Div : public SpecializedExpression {
 };
 
 class Pow : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("pow", 0, 0);
+  }
   public:
   Pow (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
@@ -79,6 +100,10 @@ class Pow : public SpecializedExpression {
 };
 
 class Eq : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("eq", 0, 0);
+  }
   public:
   Eq (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
@@ -91,6 +116,10 @@ class Eq : public SpecializedExpression {
 };
 
 class Nand : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("nand", 0, 0);
+  }
   public:
   Nand (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
@@ -103,6 +132,10 @@ class Nand : public SpecializedExpression {
 };
 
 class Le : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("le", 0, 0);
+  }
   public:
   Le (ExpressionPtr lhs, ExpressionPtr rhs, u32 line, u32 column)
       : lhs (lhs)
@@ -115,6 +148,10 @@ class Le : public SpecializedExpression {
 };
 
 class If : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("if", 0, 0);
+  }
   public:
   If (ExpressionPtr cond,
       ExpressionPtr ifTrue,
@@ -132,6 +169,10 @@ class If : public SpecializedExpression {
 };
 
 class Sqrt : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("sqrt", 0, 0);
+  }
   public:
   Sqrt (ExpressionPtr value, u32 line, u32 column)
       : value (value)
@@ -143,6 +184,10 @@ class Sqrt : public SpecializedExpression {
 };
 
 class Sin : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("sin", 0, 0);
+  }
   public:
   Sin (ExpressionPtr value, u32 line, u32 column)
       : value (value)
@@ -154,6 +199,10 @@ class Sin : public SpecializedExpression {
 };
 
 class Cos : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("cos", 0, 0);
+  }
   public:
   Cos (ExpressionPtr value, u32 line, u32 column)
       : value (value)
@@ -165,6 +214,10 @@ class Cos : public SpecializedExpression {
 };
 
 class List : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("list", 0, 0);
+  }
   public:
   List (std::list<ExpressionPtr>& values, u32 line, u32 column)
       : values (values)
@@ -181,6 +234,10 @@ class List : public SpecializedExpression {
 using ListPtr = ASTPointer<List>;
 
 class Head : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("head", 0, 0);
+  }
   public:
   Head (ListPtr value, u32 line, u32 column)
       : value (value)
@@ -192,6 +249,10 @@ class Head : public SpecializedExpression {
 };
 
 class Tail : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("tail", 0, 0);
+  }
   public:
   Tail (ListPtr value, u32 line, u32 column)
       : value (value)
@@ -203,6 +264,10 @@ class Tail : public SpecializedExpression {
 };
 
 class Map : public SpecializedExpression {
+  private:
+  virtual IdentifierPtr spec ( ) override {
+    return std::make_shared<Identifier> ("map", 0, 0);
+  }
   public:
   Map (IdentifierPtr funname, ListPtr list, u32 line, u32 column)
       : funname (funname)

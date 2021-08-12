@@ -1,0 +1,143 @@
+Type deduction isn't really a simple topic.
+
+Thankfully the language is quite simple, and _doesn't_ let you create
+custom types.
+
+There are only 3 types in ThisFunc
+
+- Number
+- Function
+- List
+  Where a list can only contain values of one type.
+
+
+That would mean that it actually isn't all that difficult to guess the
+types of parameters.
+
+#+begin_src this-func
+mb
+const     <- 5
+funconst <- const
+listConst <- list(1, 2, 3, 4, 5, 6)
+alias     <- const()
+map       <- pow(#0, alias())
+reducer   <- add(#0, #1)
+predicate <- le(#0, 5)
+filtered  <- filter(#0, listConst)
+filtered2 <- filter(predicte, #0)
+
+#+end_src
+
+* Body
+** Number
+Function has no parameters, returns a Number
+and is actually a constant variable of type Number
+** Identifier
+If the name of the identifier doesn't start with "#"
+then it is a constant variable of type Function
+
+
+Otherwise it is an identity function... the type of which
+we cannot deduce until it is actually called for the first time.
+
+This applies both to the parameter type as well as the return type
+as they are actually the same.
+** Funcall
+If the name of the function being called starts with "#"
+then the corresponding variable parameter is of type Function.
+
+We cannot deduce the return type of the function in this case at least
+until it's result is used as a value to a parameter with a deduced type.
+
+
+We also check each individual argument one by one.
+
+If it is a Number:
+  We check if the called function accepts a number at the position.
+
+    If it does we go to the next argument.
+
+    If it doesn't we throw a fit and ignore the function call
+    arguments for the purposes of type deduction because they aren't
+    reliable.
+    In this position we just go up one level in the deduction tree.
+
+    If it doesn't know (i.e it couldn't be deduced from the function
+    itself) it now does and we continue.
+
+If it is an Identifier:
+  If the identifier is a function name:
+    We check if the function accepts a function as a parameter at the
+    current position.
+
+    If it does then life goes on.
+
+    If it doesn't then life takes a break after vomiting to stdout.
+
+    If it doesn't know then it learned something new.
+
+  If the identifier is a parameter:
+    There are actually two-ish cases for this.
+    They both start the same though
+
+    We first check what type the function is expecting at the current
+    position. If it is known then we mark the parameter as that type,
+    else we add a callback that would tell the function once it is
+    deduced from somewhere else.
+
+    If the parameter has had it's type deduced before:
+      We check if the type we deduced from this position match with
+      the previous one. If it doesn't, scream your lungs out.
+
+      If we couldn't deduce the type here but it was known prior:
+        We don't add a callback and just directly update the types
+
+If it is a function call:
+  First repeat all of the above for it.
+
+  Now that we (hopefully) have it's return type, we match it against
+  the the expected type at the current position.
+
+
+** Expression
+
+#+begin_src scala
+def deduce(Expression e) =
+  match e {
+  case Identifier(name) =>
+    if(name.prefix("#")){
+      val id = getID(name)
+      Some(Signature(0: Ambiguous))
+      }else{
+      None
+      }
+  case funcall: Funcall =>
+    return deduce(funcall)
+  case _ =>
+    None
+}
+
+def deduce(Number n)(Signature sig, Int pos) = {
+  if(sig(pos).typeEquals(n)) return None
+  else if(sig(pos).isUnknown) param(pos).deduceLater(sig, pos)
+  else throw IncompatibleTypeException(sig(pos).type, Number, stackTrace)
+}
+
+def deduce(Identifier i) = {
+  if(i.prefix("#")){
+    if(param(pos).isUnknown)
+      sig(pos).expected(param(pos))'
+    else if (sig(pos).typeEquals(param(pos))){
+      return None
+    } else if (sig(pos).isUnknown) { param(pos).expected(sig(pos)) }
+    else throw IncompatibleTypeException(sig(pos).type, param(pos).type, stackTrace)
+  }else if (sig(pos).typeEquals(i)){
+    return None
+  } else if (sig(pos).isUnknown) { param(pos).deduceLater(sig, pos) }
+  else throw IncompatibleTypeException(sig(pos).type, Identifier, stackTrace)
+}
+
+def deduce(Funcall f) = {
+  Some(deduce(f.name).merge(f.args.map(deduce(_)).reduce(_.merge(_))))
+}
+#+end_src

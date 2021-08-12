@@ -3,6 +3,8 @@
 #include <ThisFunc/Compiler.hpp>
 #include <ThisFunc/Disassembler.hpp>
 #include <ThisFunc/Parser.hpp>
+#include <ThisFunc/Resolver.hpp>
+#include <ThisFunc/TypeDeduction.hpp>
 #include <ThisFunc/VM.hpp>
 #include <cassert>
 #include <fstream>

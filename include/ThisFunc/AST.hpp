@@ -4,6 +4,7 @@
 #include <ThisFunc/Chunk.hpp>
 #include <list>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <type_traits>
 
@@ -11,6 +12,21 @@ namespace ThisFunc {
 namespace AST {
 
   template<class A> using ASTPointer = std::shared_ptr<A>;
+
+  enum class ASTType {
+    Element,
+    Expression,
+    Statement,
+    Fundef,
+    Funcall,
+    Number,
+    Identifier,
+    Body,
+  };
+
+
+  std::ostream& operator<< (std::ostream& out, ASTType t);
+
 
   class Element {
     public:
@@ -43,6 +59,7 @@ namespace AST {
     virtual bool                isIdentifier ( ) { return false; }
 
     u32                         line, column;
+    virtual ASTType             type ( ) const { return ASTType::Element; }
   };
 
   template<class T>
@@ -71,6 +88,7 @@ namespace AST {
   class Statement : public Element {
     public:
     Statement (u32 line, u32 column) : Element (line, column) { }
+    ASTType type ( ) const override { return ASTType::Statement; }
   };
 
   using StatementPtr = ASTPointer<Statement>;
@@ -79,6 +97,7 @@ namespace AST {
     public:
     using super = Expression;
     Expression (u32 line, u32 column) : Statement (line, column) { }
+    ASTType type ( ) const override { return ASTType::Expression; }
   };
   using ExpressionPtr = ASTPointer<Expression>;
 
@@ -93,6 +112,7 @@ namespace AST {
     void                compile (VM::Chunk*) override;
     ASTPointer<Element> optimal ( ) override;
     bool                isNumber ( ) override { return true; }
+    ASTType             type ( ) const override { return ASTType::Number; }
   };
 
   using NumberPtr = ASTPointer<Number>;
@@ -109,6 +129,7 @@ namespace AST {
     void                compile (VM::Chunk*) override;
     std::string         identifier;
     bool                isIdentifier ( ) override { return true; }
+    ASTType             type ( ) const override { return ASTType::Identifier; }
   };
 
   using IdentifierPtr = ASTPointer<Identifier>;
@@ -128,6 +149,7 @@ namespace AST {
     void                     print (std::ostream*) override;
     void                     compile (VM::Chunk*) override;
     ASTPointer<Element>      optimal ( ) override;
+    ASTType type ( ) const override { return ASTType::Funcall; }
   };
 
   using FuncallPtr = ASTPointer<Funcall>;
@@ -146,8 +168,9 @@ namespace AST {
     IdentifierPtr       name;
     ExpressionPtr       body;
     private:
-    bool cached = false;
-    u32  _arity = 0;
+    bool    cached = false;
+    u32     _arity = 0;
+    ASTType type ( ) const override { return ASTType::Fundef; }
   };
 
   using FundefPtr = ASTPointer<Fundef>;
@@ -164,9 +187,11 @@ namespace AST {
         : statements (statements)
         , Element (line, column) { }
     std::list<StatementPtr> statements;
+    ASTType                 type ( ) const override { return ASTType::Body; }
   };
 
   using BodyPtr = ASTPointer<Body>;
+
 
 }     // namespace AST
 }     // namespace ThisFunc
