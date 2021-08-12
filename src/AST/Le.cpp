@@ -28,6 +28,10 @@ ElementPtr Le::optimal ( ) {
                                column);
 }
 
-void Le::compile (VM::Chunk* chunk) { chunk->write (VM::NOOP, {line, column}); }
+void Le::compile (VM::Chunk* chunk, Resolver& resolver) {
+  rhs->compile (chunk, resolver);
+  lhs->compile (chunk, resolver);
+  chunk->write (VM::OP_LE, {line, column});
+}
 
 }     // namespace ThisFunc::AST

@@ -28,8 +28,8 @@ ElementPtr Sin::optimal ( ) {
   return std::make_shared<Sin> (ptr_cast<Expression> (val), line, column);
 }
 
-void Sin::compile (VM::Chunk* chunk) {
-  chunk->write (VM::NOOP, {line, column});
+void Sin::compile (VM::Chunk* chunk, Resolver& resolver) {
+  chunk->write (VM::OP_SIN, {line, column});
 }
 
 }     // namespace ThisFunc::AST

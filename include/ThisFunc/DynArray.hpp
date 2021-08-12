@@ -20,13 +20,16 @@ template<typename Data> class DynArray {
   DynArray ( ) : capacity (0), size (0), storage ((Data*) 0xdeadbeef) { }
 
   //! Copy constructor
-  DynArray (const DynArray<Data>& other) { copy (other); }
+  DynArray (const DynArray<Data>& other) : storage ((Data*) 0xdeadbeef) {
+    copy (other);
+  }
 
   //! Move constructor
   DynArray (DynArray<Data>&& other) noexcept { move (std::move (other)); }
 
   //! Destructor
   virtual ~DynArray ( ) noexcept {
+    std::cerr << "Destroy" << getStorage ( ) << std::endl;
     if (storage && storage != (Data*) 0xdeadbeef) free (storage);
   }
 
@@ -38,13 +41,13 @@ template<typename Data> class DynArray {
     return move (std::move (other));
   }
 
-  u32  getSize ( ) const { return size; }
+  u32   getSize ( ) const { return size; }
 
-  u32  getCapacity ( ) const { return size; }
+  u32   getCapacity ( ) const { return size; }
 
-  u64  address ( ) const { return (u64) storage; }
+  u64   address ( ) const { return (u64) storage; }
 
-  Data operator[] (u32 index) {
+  Data& operator[] (u32 index) {
     if (capacity == 0) {
       throw std::runtime_error ("Accessing uninitialized memory.");
     }
@@ -52,7 +55,7 @@ template<typename Data> class DynArray {
     return storage[index];
   }
 
-  const Data operator[] (u32 index) const {
+  const Data& operator[] (u32 index) const {
     if (capacity == 0) {
       throw std::runtime_error ("Accessing uninitialized memory.");
     }
@@ -60,9 +63,15 @@ template<typename Data> class DynArray {
     return storage[index];
   }
 
-  u32 write (Data next) {
+  u32 write (Data& next) {
     if (capacity < size + 1) expand ( );
     storage[size] = next;
+    return size++;
+  }
+
+  u32 write (Data&& next) {
+    if (capacity < size + 1) expand ( );
+    storage[size] = std::move (next);
     return size++;
   }
 
@@ -89,6 +98,9 @@ template<typename Data> class DynArray {
 
   DynArray<Data>& copy (const DynArray<Data>& other) {
     if (&other != this) {
+      if (storage == (Data*) 0xdeadbeef) {
+        storage = (Data*) malloc (other.capacity * sizeof (Data));
+      }
       storage
         = static_cast<Data*> (memcpy (storage, other.storage, other.capacity));
       capacity = other.capacity;

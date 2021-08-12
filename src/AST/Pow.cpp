@@ -28,8 +28,8 @@ ElementPtr Pow::optimal ( ) {
                                 column);
 }
 
-void Pow::compile (VM::Chunk* chunk) {
-  chunk->write (VM::NOOP, {line, column});
+void Pow::compile (VM::Chunk* chunk, Resolver& resolver) {
+  chunk->write (VM::OP_POW, {line, column});
 }
 
 }     // namespace ThisFunc::AST

@@ -11,8 +11,8 @@ void Cos::print (std::ostream* out) {
   *out << ")";
 }
 
-void Cos::compile (VM::Chunk* chunk) {
-  chunk->write (VM::NOOP, {line, column});
+void Cos::compile (VM::Chunk* chunk, Resolver& resolver) {
+  chunk->write (VM::OP_COS, {line, column});
 }
 
 /**

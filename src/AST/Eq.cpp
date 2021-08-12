@@ -14,7 +14,11 @@ void Eq::print (std::ostream* out) {
   *out << ")";
 }
 
-void Eq::compile (VM::Chunk* chunk) { chunk->write (VM::NOOP, {line, column}); }
+void Eq::compile (VM::Chunk* chunk, Resolver& resolver) {
+  lhs->compile (chunk, resolver);
+  rhs->compile (chunk, resolver);
+  chunk->write (VM::OP_EQ, {line, column});
+}
 
 ElementPtr Eq::optimal ( ) {
   ElementPtr nlhs = lhs->optimal ( );

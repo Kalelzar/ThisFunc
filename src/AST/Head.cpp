@@ -19,8 +19,8 @@ ElementPtr Head::optimal ( ) {
     return std::make_shared<List> (std::list<ExpressionPtr> ( ), line, column);
 }
 
-void Head::compile (VM::Chunk* chunk) {
-  chunk->write (VM::NOOP, {line, column});
+void Head::compile (VM::Chunk* chunk, Resolver& resolver) {
+  chunk->write (VM::OP_HEAD, {line, column});
 }
 
 }     // namespace ThisFunc::AST

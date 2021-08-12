@@ -23,8 +23,10 @@ ElementPtr List::optimal ( ) {
   return std::make_shared<List> (std::move (newValues), line, column);
 }
 
-void List::compile (VM::Chunk* chunk) {
-  chunk->write (VM::NOOP, {line, column});
+void List::compile (VM::Chunk* chunk, Resolver& resolver) {
+  for (auto& element : values) { element->compile (chunk, resolver); }
+  chunk->write (VM::OP_LIST, {line, column});
+  chunk->write (values.size ( ), {line, column});
 }
 
 }     // namespace ThisFunc::AST

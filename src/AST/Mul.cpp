@@ -29,9 +29,9 @@ ElementPtr Mul::optimal ( ) {
                                 column);
 }
 
-void Mul::compile (VM::Chunk* chunk) {
-  lhs->compile (chunk);
-  rhs->compile (chunk);
+void Mul::compile (VM::Chunk* chunk, Resolver& resolver) {
+  lhs->compile (chunk, resolver);
+  rhs->compile (chunk, resolver);
   chunk->write (VM::OP_MULTIPLY, {line, column});
 }
 

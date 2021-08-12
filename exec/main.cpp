@@ -17,18 +17,12 @@ int run (std::istream* stream) {
 
   ThisFunc::Compiler  compiler;
 
-  if (compiler.compile (stream, &chunk)) {
-    ThisFunc::VM::disassemble (chunk);
-
-    ThisFunc::VM::VM vm;
-    if (vm.interpret (&chunk)) {
-      return 0;
-    } else {
-      return 1;
-    }
+  ThisFunc::VM::VM    vm;
+  if (vm.interpret (&chunk, compiler.compile (stream, &chunk))) {
+    return 0;
+  } else {
+    return 1;
   }
-
-  return 2;
 }
 
 int main (int argv, char** argc) {

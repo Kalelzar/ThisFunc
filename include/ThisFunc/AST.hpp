@@ -8,9 +8,10 @@
 #include <string>
 #include <type_traits>
 
+
 namespace ThisFunc {
 namespace AST {
-
+  class Resolver;
   template<class A> using ASTPointer = std::shared_ptr<A>;
 
   enum class ASTType {
@@ -41,9 +42,9 @@ namespace AST {
      *
      * @details    Uses a Lisp-like syntax.
      */
-    virtual void print (std::ostream*) = 0;
+    virtual void print (std::ostream*)           = 0;
 
-    virtual void compile (VM::Chunk*)  = 0;
+    virtual void compile (VM::Chunk*, Resolver&) = 0;
 
     Element (u32 line, u32 column) : line (line), column (column) { }
 
@@ -109,7 +110,7 @@ namespace AST {
 
     double              number;
     void                print (std::ostream*) override;
-    void                compile (VM::Chunk*) override;
+    void                compile (VM::Chunk*, Resolver&) override;
     ASTPointer<Element> optimal ( ) override;
     bool                isNumber ( ) override { return true; }
     ASTType             type ( ) const override { return ASTType::Number; }
@@ -126,7 +127,7 @@ namespace AST {
 
     void                print (std::ostream*) override;
     ASTPointer<Element> optimal ( ) override;
-    void                compile (VM::Chunk*) override;
+    void                compile (VM::Chunk*, Resolver&) override;
     std::string         identifier;
     bool                isIdentifier ( ) override { return true; }
     ASTType             type ( ) const override { return ASTType::Identifier; }
@@ -147,7 +148,7 @@ namespace AST {
     IdentifierPtr            name;
     std::list<ExpressionPtr> args;
     void                     print (std::ostream*) override;
-    void                     compile (VM::Chunk*) override;
+    void                     compile (VM::Chunk*, Resolver&) override;
     ASTPointer<Element>      optimal ( ) override;
     ASTType type ( ) const override { return ASTType::Funcall; }
   };
@@ -163,7 +164,7 @@ namespace AST {
 
     void                print (std::ostream*) override;
     ASTPointer<Element> optimal ( ) override;
-    void                compile (VM::Chunk*) override;
+    void                compile (VM::Chunk*, Resolver&) override;
     const u32           arity ( );
     IdentifierPtr       name;
     ExpressionPtr       body;
@@ -179,7 +180,7 @@ namespace AST {
     public:
     void       print (std::ostream*) override;
     ElementPtr optimal ( ) override;
-    void       compile (VM::Chunk*) override;
+    void       compile (VM::Chunk*, Resolver&) override;
     Body (std::list<StatementPtr>& statements, u32 line, u32 column)
         : statements (statements)
         , Element (line, column) { }

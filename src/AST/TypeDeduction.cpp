@@ -37,6 +37,7 @@ Function deduce<Fundef> (ASTPointer<Fundef> ptr, StackTrace& s, Resolver& r) {
   s.push ({{ptr->line, ptr->column}, ptr->name->identifier});
   Function f   = *r.get (ptr->name->identifier);
   auto     res = deduce (ptr->body, s, r);
+  res.name     = f.name;
   Function fin = f.merge (res, s);
   if (ptr->body->isNumber ( )) {
     if (fin.returnType == UnknownT || fin.returnType == NumberT) {
@@ -103,29 +104,37 @@ Function deduce<Funcall> (ASTPointer<Funcall> f, StackTrace& s, Resolver& r) {
     LOG ("#", i, " is a Function", std::endl);
     s.pop ( );
     return ff;
+  } else if (f->name->identifier == "list") {
+    // TODO: Check if they are all the same type
+    Function ff{ };
+    ff.fill (f->args.size ( ));
+    ff.returnType = ListT;
+    return ff;
   } else {
     u32  i     = 0;
-    // FIXME: DO NOT DO THIS.
     auto ffptr = r.get (f->name->identifier);
     if (!ffptr) { throw UndeclaredFunctionException (s, f->name->identifier); }
     Function ff = *ffptr;
     for (auto& arg : f->args) {
       std::ostringstream ss;
-      ss << "Argument " << i;
+      ss << "    Argument " << i;
       s.push ({{arg->line, arg->column}, ss.str ( )});
       auto argf = deduce (arg, s, r);
       if (arg->isNumber ( )) {
         LOG ("#", i, " is a Number", std::endl);
+        assert (ff.arguments.size ( ) >= i);
         ff.arguments[i]->deduceAs (NumberT, s);
       } else if (arg->isIdentifier ( )) {
         IdentifierPtr ident = ptr_cast<Identifier> (arg);
         if (!ident->identifier.starts_with ("#")) {
           LOG ("#", i, " is a Function", std::endl);
+          assert (ff.arguments.size ( ) >= i);
           ff.arguments[i]->deduceAs (FunctionT, s);
         }
       } else if (arg->type ( ) == ASTType::Funcall) {
         if (argf.returnType != UnknownT) {
           LOG ("#", i, " is a ", argf.returnType, std::endl);
+          assert (ff.arguments.size ( ) >= i);
           ff.arguments[i]->deduceAs (argf.returnType, s);
         }
       }
@@ -153,9 +162,7 @@ Function
 
 template<>
 Function deduce<Body> (ASTPointer<Body> e, StackTrace& s, Resolver& r) {
-  s.push ({{0, 0}, "PROG"});
   for (auto& st : e->statements) { deduce (st, s, r); }
-  s.pop ( );
   return { };
 }
 
@@ -170,7 +177,7 @@ Function
 
 
 Type Argument::deduceAs (Type deducedType, StackTrace& s) {
-  if (deducedType == UnknownT) return deducedType;
+  if (deducedType >= UnknownT || type == AnyT) return deducedType;
   if (type != UnknownT && type != deducedType) {
     throw AmbiguousTypeException (s, type, deducedType);
   } else if (type == UnknownT) {
@@ -181,10 +188,12 @@ Type Argument::deduceAs (Type deducedType, StackTrace& s) {
 }
 
 void Argument::deduceLater (std::shared_ptr<Argument> arg, StackTrace& s) {
+  if (type == AnyT) return;
   if (type != UnknownT) { arg->deduceAs (type, s); }
   dependents.push_front ({arg, s});
   arg->dependents.push_front ({std::make_shared<Argument> (*this), s});
 }
+
 
 void Argument::alertDependents ( ) {
   for (auto& arg : dependents) {

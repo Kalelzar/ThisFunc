@@ -32,8 +32,8 @@ ElementPtr Nand::optimal ( ) {
                                  column);
 }
 
-void Nand::compile (VM::Chunk* chunk) {
-  chunk->write (VM::NOOP, {line, column});
+void Nand::compile (VM::Chunk* chunk, Resolver& resolver) {
+  chunk->write (VM::OP_NAND, {line, column});
 }
 
 }     // namespace ThisFunc::AST

@@ -1,6 +1,7 @@
 #include <ThisFunc/AST.hpp>
 #include <ThisFunc/Chunk.hpp>
 #include <ThisFunc/ExtendedAST.hpp>
+#include <ThisFunc/Resolver.hpp>
 #include <cmath>
 #include <iostream>
 
@@ -14,9 +15,9 @@ void Add::print (std::ostream* out) {
   *out << ")";
 }
 
-void Add::compile (VM::Chunk* chunk) {
-  lhs->compile (chunk);
-  rhs->compile (chunk);
+void Add::compile (VM::Chunk* chunk, Resolver& resolver) {
+  lhs->compile (chunk, resolver);
+  rhs->compile (chunk, resolver);
   chunk->write (VM::OP_ADD, {line, column});
 }
 

@@ -72,6 +72,7 @@ class Function {
   Type             returnType;
   ArgList          arguments;
   Usage            usage;
+  u32              index = 0;
 
   Function (std::string&&    name,
             VM::CodeLocation pos,
@@ -82,7 +83,8 @@ class Function {
       , pos (pos)
       , returnType (returnType)
       , arguments (arguments)
-      , usage (usage) { }
+      , usage (usage)
+      , index (0) { }
 
   Function ( ) {
     name       = "";
@@ -90,12 +92,12 @@ class Function {
     returnType = UnknownT;
     arguments  = ArgList ( );
     usage      = None;
+    index      = 0;
   }
 
   void fill (u32 count) {
     for (u32 i = arguments.size ( ); i <= count; i++) {
       arguments.push_back (std::make_shared<Argument> ( ));
-      std::cout << arguments[i]->isOfType (UnknownT) << std::endl;
     }
   }
 

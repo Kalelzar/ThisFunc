@@ -29,9 +29,9 @@ ElementPtr Sub::optimal ( ) {
                                 column);
 }
 
-void Sub::compile (VM::Chunk* chunk) {
-  lhs->compile (chunk);
-  rhs->compile (chunk);
+void Sub::compile (VM::Chunk* chunk, Resolver& resolver) {
+  rhs->compile (chunk, resolver);
+  lhs->compile (chunk, resolver);
   chunk->write (VM::OP_SUBTRACT, {line, column});
 }
 

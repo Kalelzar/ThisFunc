@@ -21,8 +21,8 @@ ElementPtr Sqrt::optimal ( ) {
   return std::make_shared<Sqrt> (ptr_cast<Expression> (val), line, column);
 }
 
-void Sqrt::compile (VM::Chunk* chunk) {
-  chunk->write (VM::NOOP, {line, column});
+void Sqrt::compile (VM::Chunk* chunk, Resolver& resolver) {
+  chunk->write (VM::OP_SQRT, {line, column});
 }
 
 }     // namespace ThisFunc::AST

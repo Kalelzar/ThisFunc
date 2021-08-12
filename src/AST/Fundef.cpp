@@ -1,4 +1,8 @@
+#include "ThisFunc/Chunk.hpp"
+#include "ThisFunc/Disassembler.hpp"
+
 #include <ThisFunc/AST.hpp>
+#include <ThisFunc/Resolver.hpp>
 #include <cmath>
 #include <cstdio>
 #include <iostream>
@@ -6,16 +10,16 @@
 namespace ThisFunc::AST {
 
 void Fundef::print (std::ostream* out) {
-  *out << "\"\")\n(defun ";
+  *out << "(defun ";
   name->print (out);
   *out << " (";
   for (u32 i = 0; i < arity ( ); i++) {
     *out << "_" << i;
     if (i != arity ( ) - 1) *out << " ";
   }
-  *out << ") ";
+  *out << ")";
   body->print (out);
-  *out << ")(progn";
+  *out << ")\n";
 }
 
 template<ASTElement T> u32 walk (ASTPointer<T> t);
@@ -30,6 +34,7 @@ template<> u32             walk<Identifier> (IdentifierPtr e) {
     return 0;
   }
 }
+
 template<> u32 walk<Funcall> (FuncallPtr e) {
   u32 arity = walk (e->name);
   for (auto& element : e->args) { arity = std::max (arity, walk (element)); }
@@ -56,8 +61,11 @@ ElementPtr Fundef::optimal ( ) {
   return std::make_shared<Fundef> (name, newBody, line, column);
 }
 
-void Fundef::compile (VM::Chunk* chunk) {
-  chunk->write (VM::NOOP, {line, column});
+void Fundef::compile (VM::Chunk* chunk, Resolver& resolver) {
+  auto callable = resolver.call (name->identifier);
+  body->compile (&(callable->chunk), resolver);
+  callable->chunk.write (VM::OP_RETURN, {line, column});
+  VM::disassemble (callable->chunk);
 }
 
 }     // namespace ThisFunc::AST

@@ -1,10 +1,11 @@
 #include <ThisFunc/AST.hpp>
 #include <ThisFunc/Compiler.hpp>
+#include <ThisFunc/Disassembler.hpp>
 #include <ThisFunc/Resolver.hpp>
 #include <ThisFunc/TypeDeduction.hpp>
 
 namespace ThisFunc {
-bool Compiler::compile (std::istream* in, VM::Chunk* bytecode) {
+AST::Resolver Compiler::compile (std::istream* in, VM::Chunk* bytecode) {
   Parser        parser (in);
   AST::BodyPtr  result = parser.parse ( );
 
@@ -12,7 +13,7 @@ bool Compiler::compile (std::istream* in, VM::Chunk* bytecode) {
 
   if (parser.hadError) {
     std::cerr << "Compilation unsuccessful." << std::endl;
-    return false;
+    exit (4);
   }
 
   auto opt = AST::ptr_cast<AST::Body> (result->optimal ( ));
@@ -20,8 +21,9 @@ bool Compiler::compile (std::istream* in, VM::Chunk* bytecode) {
   r.resolve (opt);
   AST::StackTrace s;
   AST::deduce (opt, s, r);
-  opt->compile (bytecode);
 
-  return true;
+  opt->compile (bytecode, r);
+  VM::disassemble (*bytecode);
+  return r;
 }
 }     // namespace ThisFunc

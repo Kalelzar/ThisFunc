@@ -3,6 +3,7 @@
 
 #include <ThisFunc/Chunk.hpp>
 #include <ThisFunc/Parser.hpp>
+#include <ThisFunc/Resolver.hpp>
 
 namespace ThisFunc {
 
@@ -10,7 +11,7 @@ class Compiler {
 
   private:
   public:
-  bool compile (std::istream*, VM::Chunk*);
+  AST::Resolver compile (std::istream*, VM::Chunk*);
 };
 
 }     // namespace ThisFunc

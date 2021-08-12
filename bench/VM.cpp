@@ -5,21 +5,21 @@
 #include <hayai/hayai.hpp>
 
 bool executeTF (std::string filename) {
-  std::ifstream       file (filename);
-  ThisFunc::VM::Chunk chunk;
+  // std::ifstream       file (filename);
+  // ThisFunc::VM::Chunk chunk;
 
-  ThisFunc::Compiler  compiler;
+  // ThisFunc::Compiler  compiler;
 
-  if (compiler.compile (&file, &chunk)) {
-    //    ThisFunc::VM::disassemble(chunk);
+  // if (compiler.compile (&file, &chunk)) {
+  //   //    ThisFunc::VM::disassemble(chunk);
 
-    ThisFunc::VM::VM vm;
-    if (vm.interpret (&chunk)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  //   ThisFunc::VM::VM vm;
+  //   if (vm.interpret (&chunk)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   return false;
 }

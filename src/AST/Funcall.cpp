@@ -1,5 +1,8 @@
+#include "ThisFunc/Chunk.hpp"
+
 #include <ThisFunc/AST.hpp>
 #include <ThisFunc/ExtendedAST.hpp>
+#include <ThisFunc/TypeDeduction.hpp>
 #include <iostream>
 #include <memory>
 
@@ -15,10 +18,44 @@ void Funcall::print (std::ostream* out) {
   *out << ")";
 }
 
-void Funcall::compile (VM::Chunk* chunk) {
-  chunk->write (VM::OP_CONSTANT, {line, column});
-  chunk->write (chunk->addConstant (0), {line, column});
+void Funcall::compile (VM::Chunk* chunk, Resolver& resolver) {
+  auto f = resolver.get (name->identifier);
+  u32  i = 0;
+  for (auto& e : args) {
+    e->compile (chunk, resolver);
+    if (f->arguments[i]->type == NumberT) {
+      chunk->write (VM::OP_BIND_NUMBER, {line, column});
+    } else if (f->arguments[i]->type == ListT) {
+      chunk->write (VM::OP_BIND_LIST, {line, column});
+    } else if (f->arguments[i]->type == FunctionT) {
+      chunk->write (VM::OP_BIND_FUNCTION, {line, column});
+    } else if (f->arguments[i]->type == UnknownT) {
+      if (e->isNumber ( )) {
+        chunk->write (VM::OP_BIND_NUMBER, {line, column});
+      } else if (e->isIdentifier ( )) {
+        auto id = ptr_cast<Identifier> (e);
+        if (id->identifier.starts_with ("#")) {
+        } else {
+          chunk->write (VM::OP_BIND_FUNCTION, {line, column});
+        }
+      } else if (e->type ( ) == ASTType::Funcall) {
+        auto fc  = ptr_cast<Funcall> (e);
+        auto fcf = resolver.get (fc->name->identifier);
+        if (fcf->returnType == NumberT) {
+          chunk->write (VM::OP_BIND_NUMBER, {line, column});
+        } else if (fcf->returnType == FunctionT) {
+          chunk->write (VM::OP_BIND_FUNCTION, {line, column});
+        } else if (fcf->returnType == ListT) {
+          chunk->write (VM::OP_BIND_LIST, {line, column});
+        }
+      }
+    }
+    i++;
+  }
+  chunk->write (VM::OP_CALL, {line, column});
+  chunk->write (resolver.get (name->identifier)->index, {line, column});
 }
+
 
 ElementPtr Funcall::optimal ( ) {
   if (name->identifier == "add" && args.size ( ) == 2) {
@@ -93,6 +130,15 @@ ElementPtr Funcall::optimal ( ) {
                                ptr_cast<List> (args.back ( )->optimal ( )),
                                line,
                                column)
+          ->optimal ( );
+    return map;
+  } else if (name->identifier == "filter" && args.size ( ) == 2) {
+    // FIX: Check type before casting
+    auto map
+      = std::make_shared<Filter> (ptr_cast<Identifier> (args.front ( )),
+                                  ptr_cast<List> (args.back ( )->optimal ( )),
+                                  line,
+                                  column)
           ->optimal ( );
     return map;
   }
