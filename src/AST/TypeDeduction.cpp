@@ -23,8 +23,10 @@ using StackTrace = std::stack<CodeContext, std::deque<CodeContext>>;
 template<>
 Function
   deduce<Statement> (ASTPointer<Statement> e, StackTrace& s, Resolver& r);
+
 template<>
 Function deduce<Expression> (ASTPointer<Expression>, StackTrace&, Resolver& r);
+
 template<>
 Function deduce<Fundef> (ASTPointer<Fundef> ptr, StackTrace& s, Resolver& r) {
   LOG ("Defun: ",

@@ -25,13 +25,14 @@ enum OpCode {
   OP_DIVIDE,            //!
   OP_SIN,               //!
   OP_LIST,              //!
-  OP_MAP,               //!
-  OP_FILTER,            //!
-  OP_JZ,                //!
-  OP_JMP,               //!
-  OP_POP,               //!
-  OP_POW,               //!
-  OP_LE,                //!
+  OP_LIST_ALL,
+  OP_MAP,        //!
+  OP_FILTER,     //!
+  OP_JZ,         //!
+  OP_JMP,        //!
+  OP_POP,        //!
+  OP_POW,        //!
+  OP_LE,         //!
   OP_HEAD,
   OP_SQRT,     //!
   OP_COS,      //!

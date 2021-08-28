@@ -179,6 +179,42 @@ class List : public SpecializedExpression {
   void                     print (std::ostream*) override;
   void                     compile (VM::Chunk*, Resolver&) override;
   ElementPtr               optimal ( ) override;
+  void                     unfurl (VM::Chunk*             chunk,
+                                   Resolver&              resolver,
+                                   ASTPointer<Identifier> fun,
+                                   VM::OpCode             code) {
+    for (auto& i : values) {
+      i->compile (chunk, resolver);
+      chunk->write (VM::OP_BIND_NUMBER, {line, column});
+      chunk->write (VM::OP_CALL, {line, column});
+      fun->compile (chunk, resolver);
+      if (code == VM::OP_FILTER) {
+        chunk->write (VM::OP_JZ, {line, column});
+        chunk->write (0xff, {line, column});
+        u32 offset = chunk->write (0xff, {line, column}) - 2;
+        chunk->write (VM::OP_POP, {line, column});
+        i->compile (chunk, resolver);
+        u32 endOfJump = chunk->getSize ( ) - offset;
+        if (endOfJump > UINT16_MAX) {
+          throw std::runtime_error ("Attempt to jump over too much code.");
+        }
+
+        chunk->storage[offset + 1] = (endOfJump >> 8) & 0xff;
+        chunk->storage[offset + 2] = endOfJump & 0xff;
+        chunk->write (VM::OP_JMP, {line, column});
+        chunk->write (0xff, {line, column});
+        offset = chunk->write (0xff, {line, column}) - 2;
+        chunk->write (VM::OP_POP, {line, column});
+        u32 jumpOutside = chunk->getSize ( ) - offset - 3;
+        if (jumpOutside > UINT16_MAX) {
+          throw std::runtime_error ("Attempt to jump over too much code.");
+        }
+        chunk->storage[offset + 1] = (jumpOutside >> 8) & 0xff;
+        chunk->storage[offset + 2] = jumpOutside & 0xff;
+      }
+    }
+    chunk->write (VM::OP_LIST_ALL, {line, column});
+  }
 };
 
 using ListPtr = ASTPointer<List>;

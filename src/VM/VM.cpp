@@ -88,6 +88,13 @@ bool VM::run ( ) {
         push (lists.size ( ) - 1, bList);
         break;
       }
+      case OP_LIST_ALL: {
+        std::forward_list<Constant> l;
+        while (stack != stackTop) { l.push_front (pop ( )); }
+        lists.push_back (std::move (l));
+        push (lists.size ( ) - 1, bList);
+        break;
+      }
       case OP_RETURN: {
         if (frameCount == 0) exit (0);
         frames[frameCount].boundCount = 0;
@@ -119,7 +126,7 @@ bool VM::run ( ) {
         break;
       }
       case OP_LE: {
-        push (pop ( ) < pop ( ) == 0 ? 1 : 0, bNumber);
+        push (pop ( ) >= pop ( ) == 0 ? 1 : 0, bNumber);
         break;
       }
       case OP_SUBTRACT: {
@@ -136,6 +143,10 @@ bool VM::run ( ) {
       }
       case OP_SIN: {
         push (std::sin (pop ( )), bNumber);
+        break;
+      }
+      case OP_SQRT: {
+        push (std::sqrt (pop ( )), bNumber);
         break;
       }
       case OP_COS: {

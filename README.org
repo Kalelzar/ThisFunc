@@ -1,0 +1,6 @@
+Compiled with gcc v10.2.1 and clang 12.0.0
+
+Tests require local installations of GoogleTest, rapidcheck and hayai
+that are not included in the archive due to the 1MB file size limit.
+
+Borislav Atanasov fn. 45696

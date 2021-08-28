@@ -38,15 +38,19 @@ ElementPtr If::optimal ( ) {
 
 void If::compile (VM::Chunk* chunk, Resolver& resolver) {
   cond->compile (chunk, resolver);
+
   chunk->write (VM::OP_JZ, {ifTrue->line, ifTrue->column});
   chunk->write (0xff, {ifTrue->line, ifTrue->column});
   u32 offset = chunk->write (0xff, {ifTrue->line, ifTrue->column}) - 2;
   chunk->write (VM::OP_POP, {ifTrue->line, ifTrue->column});
+
   ifTrue->compile (chunk, resolver);
+
   u32 jumpToElse = chunk->getSize ( ) - offset;
   if (jumpToElse > UINT16_MAX) {
     throw std::runtime_error ("Attempt to jump over too much code.");
   }
+
   chunk->storage[offset + 1] = (jumpToElse >> 8) & 0xff;
   chunk->storage[offset + 2] = jumpToElse & 0xff;
 
